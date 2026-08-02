@@ -267,10 +267,12 @@ def main():
     conv_path = os.path.join(RES, "convergence.json")
     if os.path.exists(conv_path):
         conv = json.load(open(conv_path))
+        grid_cases = conv.get("grid_cases", conv if isinstance(conv, list) else [])
         metrics["convergence_imbalance_by_dx"] = [
             {"dx_nm": c["dx"], "dt": c["dt"], "imbalance": c["imbalance"]}
-            for c in conv
+            for c in grid_cases
         ]
+        metrics["convergence_under_1pct"] = conv.get("imbalance_converged_under_1pct")
     with open(os.path.join(RES, "entangletron_metrics.json"), "w") as f:
         json.dump(metrics, f, indent=2)
     print("   metrics:", json.dumps(metrics, indent=2))

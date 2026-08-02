@@ -1,29 +1,62 @@
-[
-  {
-    "dx": 4.0,
-    "Nx": 110,
-    "Ny": 60,
-    "dt": 0.6,
-    "Nt": 650,
-    "imbalance": 0.15567780221286154,
-    "norm": 0.9999999999998941
-  },
-  {
-    "dx": 2.0,
-    "Nx": 140,
-    "Ny": 80,
-    "dt": 0.3,
-    "Nt": 1300,
-    "imbalance": 0.08289705590037617,
-    "norm": 1.0000000000000742
-  },
-  {
-    "dx": 1.0,
-    "Nx": 260,
-    "Ny": 150,
-    "dt": 0.15,
-    "Nt": 2600,
-    "imbalance": 0.04009459835550646,
-    "norm": 0.9999999999995712
-  }
-]
+{
+  "grid_cases": [
+    {
+      "dx": 4.0,
+      "dt": 0.6,
+      "Nt": 650,
+      "imbalance": 0.3135482280821067,
+      "fringe_peak_nm": 6.881101556022438,
+      "band_transmission": 0.03436921444081066,
+      "norm": 0.9999999999998922
+    },
+    {
+      "dx": 2.0,
+      "dt": 0.3,
+      "Nt": 1300,
+      "imbalance": 0.2336308099185881,
+      "fringe_peak_nm": 6.663991528005512,
+      "band_transmission": 0.0177688800432022,
+      "norm": 1.0000000000000664
+    },
+    {
+      "dx": 1.0,
+      "dt": 0.15,
+      "Nt": 2600,
+      "imbalance": 0.1946004938165571,
+      "fringe_peak_nm": 6.746217683883889,
+      "band_transmission": 0.008638570088930082,
+      "norm": 0.9999999999995991
+    },
+    {
+      "dx": 0.5,
+      "dt": 0.075,
+      "Nt": 5200,
+      "imbalance": 0.17415716970917297,
+      "fringe_peak_nm": 6.743650210479007,
+      "band_transmission": 0.004256791680862228,
+      "norm": 0.9999999999996322
+    }
+  ],
+  "relative_change": [
+    {
+      "from_dx": 4.0,
+      "to_dx": 2.0,
+      "imbalance": 0.2336308099185881,
+      "rel_change": 0.3420671194495578
+    },
+    {
+      "from_dx": 2.0,
+      "to_dx": 1.0,
+      "imbalance": 0.1946004938165571,
+      "rel_change": 0.20056637748732256
+    },
+    {
+      "from_dx": 1.0,
+      "to_dx": 0.5,
+      "imbalance": 0.17415716970917297,
+      "rel_change": 0.11738433819016857
+    }
+  ],
+  "imbalance_converged_under_1pct": false,
+  "observable": "detector imbalance at phase_k=1.0, fixed physical time 390 units"
+}

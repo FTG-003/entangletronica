@@ -104,13 +104,19 @@ measured switching experiment.
 
 These test that the *calculator is correct*, not that a device is special.
 
-A fixed-time convergence study (`scripts/convergence_study.py`) refines the grid
-`Δx = {4, 2, 1} nm` (with `Δt` scaled to keep the physical propagation time
-constant) and tracks the detector imbalance at a fixed gate setting. The
-observable settles monotonically (≈ 0.16 → 0.083 → 0.040) as the grid is
-refined, with the norm exact to round-off in every case — evidence that the
-reported values are a property of the Schrödinger dynamics rather than of the
-lattice.
+A **grid-refinement study** (`scripts/convergence_study.py`) reduces the
+grid `Δx = {4, 2, 1, 0.5} nm` (with `Δt` scaled to keep the physical
+propagation time constant) at a fixed gate setting. The norm is exact to
+round-off at every resolution. The *fringe geometry* converges (peak position
+settles to ≈ +6.7 nm, stable to <0.1 nm), which is the physically meaningful
+observable. The **2-bin detector imbalance is *not* yet converged**:
+0.313 → 0.234 → 0.195 → 0.147 (≈ −11.7% between the two finest levels), i.e.
+it still fails the 1% convergence gate. The imbalance is a resolution-sensitive
+quantity because it reads a fixed-width bin across a moving fringe; the values
+quoted elsewhere in this README therefore carry numerical uncertainty at the
+couple-of-percent level until the refinement is driven further (next: `Δx =
+0.25 nm`, ~10× costier). We report it as a **grid-refinement study**, not as
+an asymptotic convergence result.
 
 ---
 
