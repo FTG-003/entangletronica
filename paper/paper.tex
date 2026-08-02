@@ -180,12 +180,31 @@ The peak moves monotonically with $\kphi$ while the contrast remains high
 ($C > 0.9$), confirming that the logic output is \emph{displacement-driven}
 interference, not amplitude modulation.
 
+\subsubsection{Read-out and grid sensitivity}
+\label{sec:readout}
+
+Because the imbalance $\mathcal I$ in Eq.~(\ref{eq:imb}) is a functional of the
+detector profile, we separated the numerical stability of the \emph{wave
+dynamics} from that of the \emph{read-out functional}
+(Figure~\ref{fig:readout}; \texttt{scripts/readout_sensitivity.py}). For the
+same propagated state, the fringe peak, centroid and width are stable under
+grid refinement $\Delta x = \{4,2,1,0.5\}$\,nm and the profile $L^2$ error
+decays near second order; the two-bin imbalance read as a continuous functional
+of the interpolated profile is stable at $\approx 0.154$ already at $\Delta x =
+2$\,nm. Read instead as a box-sum on the raw grid, the same imbalance drifts
+($\approx 0.31\rightarrow 0.23\rightarrow 0.20\rightarrow 0.17$). The apparent
+non-convergence of the earlier two-bin imbalance is therefore an artefact of
+the discretised read-out, not of the underlying dynamics --- the solver,
+geometry and read-out are three distinct objects.
+
 \section{Discussion}
 \label{sec:disc}
 
 The double-slit geometry is the simplest building block discussed here: the
 phase-gate parameter $\kphi$ shifts the interference read-out (a physical
-gate-voltage transfer is beyond the present model). Two features stand out. First, the linearity of Eq.~\eqref{eq:imb} means the
+gate-voltage transfer is beyond the present model). The read-out analysis of
+Sec.~\ref{sec:readout} also draws the methodological line between the
+simulated phenomenon and the metric chosen to observe it. Two features stand out. First, the linearity of Eq.~\eqref{eq:imb} means the
 output is a faithful analogue of the gate waveform in the shallow-lens regime; in
 the two-bin read-out it becomes a threshold logic level. Second, because the
 electron is flying, the same gate could in principle be modulated \emph{during}
@@ -204,10 +223,11 @@ monotonically ($R^2 = 0.99997$ over the fitted regime) up to an imbalance of
 architecture propagates a probability wave rather than localising it in a
 qubit. Extending beyond this idealised single-particle model --- including
 thermal spread, disorder and dephasing --- is required before device-level claims
-can be made. Next steps include driving the grid-refinement study to its
-asymptotic regime (the 2-bin imbalance still shifts \SI{\approx 11.7}{\percent}
-between the two finest grids and the fringe position has converged), a
-realistic gate-voltage mapping, and many-body or decoherence studies.
+can be made. For the observables considered here, the wave dynamics and the
+continuous detector read-out are numerically stable at $\Delta x = 2$\,nm
+(Sec.~\ref{sec:readout}). Next steps are the physical gate-voltage mapping
+($\kphi \rightarrow V_g \rightarrow V(x,y)$, beyond the present model) and
+many-body or dephasing studies.
 
 \bibliographystyle{unsrt}
 \begin{thebibliography}{9}
@@ -247,11 +267,24 @@ after propagation: a pure probability wave, delocalised and spreading.}
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{../figures/fig3_interference.pdf}
-\caption{\textbf{Interference figure and gate-induced shift.} Left: final
-$|\psi|^2$ with the gate on (white contours: potential). Right: detector-plane
-profile, gate off vs.\ gate on --- the fringe is displaced, the envelope is
-not.}
-\label{fig:interf}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{../figures/fig6_readout_profile.pdf}
+\caption{\textbf{Detector read-out vs.\ grid resolution.} Same propagated
+state, detector-plane profile $P(y)=|\psi(x_d,y)|^2$ normalised, for
+$\Delta x = 4, 2, 1, 0.5$\,nm (coloured). The wave-dynamics geometry ---
+fringe peak, centroid and width --- is stable with refinement, and the profile
+$L^2$ error (relative to $\Delta x=0.5$\,nm) decays near second order. The
+same profile read as a \emph{continuous} functional $\mathcal R[P]$ of the
+interpolated $P$ is stable at $\approx 0.154$ already at $\Delta x = 2$\,nm;
+read instead as a \emph{box-sum on the raw grid}, it drifts under refinement.
+The apparent non-convergence therefore belongs to the discretised read-out
+functional, not to the wave dynamics (vertical lines: the $\pm10,14,20$\,nm bin
+edges). Reproducible via \texttt{scripts/readout_sensitivity.py} $\rightarrow$
+\texttt{results/readout_sensitivity.json}.}
+\label{fig:readout}
 \end{figure}
 
 \begin{figure}[t]
