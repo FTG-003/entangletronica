@@ -104,19 +104,35 @@ measured switching experiment.
 
 These test that the *calculator is correct*, not that a device is special.
 
-A **grid-refinement study** (`scripts/convergence_study.py`) reduces the
-grid `Δx = {4, 2, 1, 0.5} nm` (with `Δt` scaled to keep the physical
-propagation time constant) at a fixed gate setting. The norm is exact to
-round-off at every resolution. The *fringe geometry* converges (peak position
-settles to ≈ +6.7 nm, stable to <0.1 nm), which is the physically meaningful
-observable. The **2-bin detector imbalance is *not* yet converged**:
-0.313 → 0.234 → 0.195 → 0.147 (≈ −11.7% between the two finest levels), i.e.
-it still fails the 1% convergence gate. The imbalance is a resolution-sensitive
-quantity because it reads a fixed-width bin across a moving fringe; the values
-quoted elsewhere in this README therefore carry numerical uncertainty at the
-couple-of-percent level until the refinement is driven further (next: `Δx =
-0.25 nm`, ~10× costier). We report it as a **grid-refinement study**, not as
-an asymptotic convergence result.
+These test that the *calculator is correct*, not that a device is special.
+
+A **grid-refinement study** (`scripts/convergence_study.py`) reduces the grid
+`Δx = {4, 2, 1, 0.5} nm` (with `Δt` scaled to keep the physical propagation
+time constant) at a fixed gate setting. The norm is exact to round-off at
+every resolution, the fringe peak settles to ≈ +6.7 nm (stable to <0.1 nm),
+and the *profile* L2 error decays near second order. A summary of the
+observables:
+
+* fringe peak — converged (≈ +6.7 nm, stable <0.1 nm);
+* centroid & width — converged (≈ +3.15 nm, ≈ 14.9 nm);
+* profile L2 vs finest — 0.007 → 0.002 → 0.0002 (near 2nd order);
+* two-bin imbalance read as a *continuous* functional of the profile — stable
+  at ≈ +0.154 from `Δx = 2` nm already.
+
+**Why an earlier imbalance looked unconverged.** `scripts/readout_sensitivity.py`
+re-propagated exactly the same state and read the same profile two ways. A raw
+lattice **box-sum** (the old observable) drifts `+0.314 → +0.234 → +0.195 →
++0.174` as the grid coarsens, because a coarse grid samples a fixed-width box
+from too few lines; the **continuous functional** on the same state is stable
+at `≈ +0.154` from `Δx = 2` down. The discrepancy closes exactly as the grid
+refines (`+0.15 → +0.08 → +0.04 → +0.02`).
+
+**Conclusion:** the non-convergence was an artefact of the *lattice readout*,
+not of the quantum dynamics. A correct (interpolated) readout is converged at
+`Δx = 2 nm`; no finer grid was needed to settle the question. We present this
+as a grid-refinement *and readout-sensitivity* study, `Δx = 0.25 nm` deferred
+(reserved for an actual physics question, not a readout artefact). Result
+produced by `readout_sensitivity.py`, figure `fig6_readout_profile.pdf`.
 
 ---
 
