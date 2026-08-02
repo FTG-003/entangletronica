@@ -1,0 +1,8 @@
+# runtime deps for simulation + figures
+numpy>=1.24
+scipy>=1.10
+matplotlib>=3.7
+Pillow>=9.0        # GIF assembly (matplotlib GIF backend)
+
+# paper build (optional)
+# texlive (pdflatex) for paper/paper.tex
