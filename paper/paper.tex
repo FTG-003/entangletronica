@@ -45,7 +45,7 @@ imbalance of $0.44$.
 \section{Introduction}
 \label{sec:intro}
 
-The flying-electron paradigm \cite{bordone, ji} treats the electron not as a
+The flying-electron paradigm \cite{bertoni, ji, bliokh} treats the electron not as a
 localised carrier but as a delocalised probability wave launched into a
 ballistic channel. Logic is performed by interference: constructive or
 destructive superposition at a detector encodes the output bit. The central
@@ -209,8 +209,18 @@ output is a faithful analogue of the gate waveform in the shallow-lens regime; i
 the two-bin read-out it becomes a threshold logic level. Second, because the
 electron is flying, the same gate could in principle be modulated \emph{during}
 the transit, suggesting in-flight interference control (see~\cite{ji} for the
-experimental platform); the transit time here is \SI{0.24}{ps}, and the total
-simulated propagation is \SI{0.14}{ps}.
+experimental platform; decoherence-limited coherence length is probed by
+Mach--Zehnder interferometry in \cite{roulleau}). The two propagation times quoted here measure
+different endpoints and are not in conflict. $T=\SI{390}{solver\,units}=\SI{0.14}{ps}$
+is the \emph{simulated} window: at the group velocity
+$v_g=\SI{5.5e5}{m/s}$ it carries the packet centre from
+$x=\SI{25}{nm}$ (source) to $x\approx\SI{103}{nm}$, inside the
+$\sigma=\SI{10}{nm}$ width and approaching the detector plane at
+$x=\SI{110}{nm}$. The \SI{0.24}{ps} figure, in contrast, is the full
+source-to-channel-end transit over $\approx\SI{130}{nm}$; it is quoted only to
+set the in-flight modulation bandwidth and is not the simulated window. The
+r\'elevant distance is therefore source-to-detector ($\approx\SI{85}{nm}$), not
+the channel length.
 
 \section{Conclusions}
 \label{sec:concl}
@@ -231,19 +241,21 @@ many-body or dephasing studies.
 
 \bibliographystyle{unsrt}
 \begin{thebibliography}{9}
-\bibitem{bordone} P.~Bordone, A.~Bertoni, G.~Ferrari, R.~Brunner,
-C.~Jacoboni, ``Spatial entanglement of two flying electrons in a
-semiconductor nanostructure,'' \emph{Semicond.~Sci.~Technol.} \textbf{19},
-S312 (2004).
+\bibitem{bertoni} A.~Bertoni, P.~Bordone, R.~Brunetti, C.~Jacoboni, S.~Reggiani,
+``Quantum logic gates based on coherent electron transport in quantum wires,''
+\emph{Phys.~Rev.~Lett.} \textbf{84}, 5912 (2000), DOI
+\texttt{10.1103/PhysRevLett.84.5912}.
 \bibitem{ji} Y.~Ji, Y.~Chung, D.~Sprinzak, M.~Heiblum, D.~Mahalu,
 H.~Shtrikman, ``An electronic Mach--Zehnder interferometer,'' \emph{Nature}
-\textbf{422}, 415 (2003).
-\bibitem{bliokh} K.~Y.~Bliokh, P.~Schattschneider, J.~Nye, \emph{et al.},
-``Theory and applications of free-electron vortex states,''
-\emph{Phys.~Rep.} \textbf{690}, 1 (2017).
-\bibitem{hatano} T.~Hatano, S.~Amaha, T.~Kubo, Y.~Tokura, D.~G.~Austing,
-S.~Tarucha, ``Mach--Zehnder interferometry of a flying electron in a
-semiconductor,'' \emph{Proc.~Int.~Symp.~Found.~Quantum Mech.} (2011).
+\textbf{422}, 415 (2003), DOI \texttt{10.1038/nature01503}.
+\bibitem{bliokh} K.~Y.~Bliokh, I.~P.~Ivanov, G.~Guzzinati \emph{et al.},
+  ``Theory and applications of free-electron vortex states,''
+\emph{Phys.~Rep.} \textbf{690}, 1 (2017), DOI
+\texttt{10.1016/j.physrep.2017.05.006}.
+\bibitem{roulleau} P.~Roulleau, F.~Portier, P.~Roche, A.~Cavanna, D.~Faini,
+Y.~Gennser, D.~Mailly, ``Direct measurement of the coherence length of
+  edge states in the integer quantum Hall regime,'' \emph{Phys.~Rev.~Lett.}
+\textbf{100}, 126802 (2008), DOI \texttt{10.1103/PhysRevLett.100.126802}.
 \end{thebibliography}
 
 \begin{figure}[t]
