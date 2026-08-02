@@ -17,6 +17,7 @@ from scipy.signal import find_peaks
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from entangletronica import potential as P
 from entangletronica import electron
+from entangletronica import gates
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIG = os.path.join(HERE, "figures")
@@ -262,6 +263,14 @@ def main():
         "norm_conservation_max_dev": float(np.max(np.abs(tr[:, 4] - 1.0))),
         "detector_plane_x_nm": DET_X,
     }
+    # attach the fixed-time convergence study if it has been run
+    conv_path = os.path.join(RES, "convergence.json")
+    if os.path.exists(conv_path):
+        conv = json.load(open(conv_path))
+        metrics["convergence_imbalance_by_dx"] = [
+            {"dx_nm": c["dx"], "dt": c["dt"], "imbalance": c["imbalance"]}
+            for c in conv
+        ]
     with open(os.path.join(RES, "entangletron_metrics.json"), "w") as f:
         json.dump(metrics, f, indent=2)
     print("   metrics:", json.dumps(metrics, indent=2))

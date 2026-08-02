@@ -32,8 +32,13 @@ def charge_conservation(psi):
 
 
 def transmission_total(hist):
-    """Total probability reaching the detector zone (leakage metric)."""
-    return hist["upper"] + hist["lower"] + hist["centre"]
+    """Total probability reaching the detector zone (leakage metric).
+
+    ``centre`` is a subset of ``upper ∪ lower`` (the histogram splits at
+    y=0), so summing all three would double-count the central band. Use only
+    the two disjoint bins for the total.
+    """
+    return hist["upper"] + hist["lower"]
 
 # ----------------------------------------------------------------------------- phase sweep
 def phase_sweep_run(X, Y, dt, Nt, phis, splitter_k=1.0, phase_k=1.0, dx=0.0,

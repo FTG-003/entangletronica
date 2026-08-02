@@ -32,16 +32,14 @@ Quantum Lenses (Entangletronica)}
 
 \begin{abstract}
 We report a full numerical study of \ent, a device architecture in which
-logic is performed by a single electron flying through an electrostatic
-interferometer. A Gaussian wave packet is propagated through a gate-defined
-double-slit barrier in a two-dimensional electron gas; a phase gate placed
+a single-particle wavefunction is propagated through a gate-defined double-slit
+barrier in a two-dimensional electron gas; a phase gate placed
 behind one slit --- a shallow electrostatic lens of programmable depth ---
-imparts a controlled phase shift during flight, displacing the interference
+imparts a controlled phase shift during propagation, displacing the interference
 figure at a downstream detector. The split-step solver is unitary to
-$10^{-13}$. The measured transfer characteristic is linear with
-$R^2 = 0.99997$ over a gate-depth scan, with a maximum detector imbalance of
-$0.44$. The device converts a gate voltage into an interference-logic output
-with picosecond-scale switching time.
+$10^{-13}$ (round-off). The simulated transfer characteristic is approximately
+linear with $R^2 = 0.99997$ over a gate-depth scan, with a maximum detector
+imbalance of $0.44$.
 \end{abstract}
 
 \section{Introduction}
@@ -82,9 +80,9 @@ minimum-uncertainty Gaussian packet
 with $s = \SI{10}{nm}$, $\bm r_0 = (25,0)\,\text{nm}$, $k_0 =
 \SI{0.20}{nm^{-1}}$. The central kinetic energy is
 $E = \hbar^2 k_0^2/2m^* = \SI{36.3}{meV}$ and the de~Broglie wavelength
-$\lambda = 2\pi/k_0 = \SI{31.4}{nm}$; the ballistic velocity
-$v = \hbar k_0/m^* \approx \SI{8e4}{m/s}$ carries the electron across the
-\SI{130}{nm} device in roughly \SI{2}{ps}.
+$\lambda = 2\pi/k_0 = \SI{31.4}{nm}$; the ballistic (group) velocity
+$v_g = \hbar k_0/m^* \approx \SI{5.5e5}{m/s}$ carries the electron across the
+\SI{130}{nm} device in roughly \SI{0.24}{ps}.
 
 \subsection{Electrostatic lens and gate}
 \label{sec:lens}
@@ -168,11 +166,10 @@ $y\in(-14,0)$\,nm). Figure~\ref{fig:transfer} shows the imbalance
 \end{equation}
 vs.\ the gate-depth factor. The response is linear:
 $\mathcal I = 0.083 + 0.142\,\kphi$ with $R^2 = 0.99997$
-(sensitivity $\SI{0.142}{per gate unit}$); the maximum measured imbalance is
+(sensitivity $\SI{0.142}{per gate unit}$); the maximum simulated imbalance is
 $0.44$. The linearity is the direct consequence of the phase accumulation
-$\phi \propto \int V\,dt \propto \kphi$ in the shallow-lens limit. The device
-is a gate-controlled interference switch: a voltage ramp on one lens steers the
-fringe across the two read-out bins.
+$\phi \propto \int V\,dt \propto \kphi$ in the shallow-lens limit. Within
+this model, ramping $\kphi$ steers the fringe across the two read-out bins.
 
 \subsection{Fringe displacement and contrast}
 \label{sec:fringe}
@@ -186,27 +183,29 @@ interference, not amplitude modulation.
 \section{Discussion}
 \label{sec:disc}
 
-The double-slit geometry is the simplest entangletronic building block: the
-phase gate is a \emph{transducer} --- gate voltage in, interference-logic out.
-Two features stand out. First, the linearity of Eq.~\eqref{eq:imb} means the
-output is a faithful analogue of the applied gate waveform; in the two-bin
-read-out it becomes a threshold logic level. Second, because the electron is
-flying, the same gate can be modulated \emph{during} flight, enabling
-in-flight programming of the interference --- the route to
-femtosecond/picosecond switching (see~\cite{ji} for the experimental
-platform).
+The double-slit geometry is the simplest building block discussed here: the
+phase-gate parameter $\kphi$ shifts the interference read-out (a physical
+gate-voltage transfer is beyond the present model). Two features stand out. First, the linearity of Eq.~\eqref{eq:imb} means the
+output is a faithful analogue of the gate waveform in the shallow-lens regime; in
+the two-bin read-out it becomes a threshold logic level. Second, because the
+electron is flying, the same gate could in principle be modulated \emph{during}
+the transit, suggesting in-flight interference control (see~\cite{ji} for the
+experimental platform); the transit time here is \SI{0.24}{ps}, and the total
+simulated propagation is \SI{0.14}{ps}.
 
 \section{Conclusions}
 \label{sec:concl}
 
-We have demonstrated numerically that a single flying electron, shaped by
-electrostatic lenses, implements controlled interference logic: a gate lens
-behind one slit of a Young interferometer displaces the interference figure
-linearly ($R^2 = 0.99997$) up to an imbalance of 0.44, with exact norm
-conservation. The architecture abandons stationary qubits in favour of
-propagating probability waves --- the fastest known information carrier in
-condensed matter. Next steps include two-electron entanglement, decoherence
-studies and dispersive read-out.
+We have demonstrated numerically that a single-particle wavefunction, shaped by
+idealized electrostatic lenses, can be propagated through a Young interferometer
+such that a gate lens behind one aperture displaces the interference figure
+monotonically ($R^2 = 0.99997$ over the fitted regime) up to an imbalance of
+0.44, with norm conserved to round-off in the discrete split-step scheme. The
+architecture propagates a probability wave rather than localising it in a
+qubit. Extending beyond this idealised single-particle model --- including
+thermal spread, disorder and dephasing --- is required before device-level claims
+can be made. Next steps include a convergence study, a realistic gate-voltage
+mapping, and many-body or decoherence studies.
 
 \bibliographystyle{unsrt}
 \begin{thebibliography}{9}
@@ -257,9 +256,9 @@ not.}
 \centering
 \includegraphics[width=0.72\linewidth]{../figures/fig4_transfer.pdf}
 \caption{\textbf{Transfer characteristic.} Detector imbalance
-Eq.~\eqref{eq:imb} vs.\ gate depth $\kphi$: linear with
-$R^2 = 0.99997$. The gate is a linear transducer from voltage to
-interference-logic.}
+Eq.~\eqref{eq:imb} vs.\ gate depth $\kphi$: approximately linear with
+$R^2 = 0.99997$ in the fitted range. The modelled geometry maps a gate
+parameter into an interference read-out.}
 \label{fig:transfer}
 \end{figure}
 
@@ -267,8 +266,9 @@ interference-logic.}
 \centering
 \includegraphics[width=0.72\linewidth]{../figures/fig5_fringe.pdf}
 \caption{\textbf{Fringe displacement and contrast vs.\ gate.} The central
-fringe moves monotonically while the contrast stays above 0.9: displacement
-logic, not amplitude modulation.}
+fringe moves monotonically while the contrast stays above 0.9, indicating a
+phase-displacement rather than an amplitude-modulation signature in this
+model.}
 \label{fig:fringe}
 \end{figure}
 
