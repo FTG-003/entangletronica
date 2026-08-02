@@ -64,3 +64,29 @@ Prima di pubblicare una figura: controlla SEMPRE che
 - il picco in k-spazio del pacchetto coincida con k0
 
 Se l'elettrone non vola, nessun risultato di interferenza è attendibile.
+
+---
+
+## ULTIMO GIRO DI MANUTENZIONE (2025-08-02)
+
+1. **Bibliografia della carta** — audit Crossref dei 4 riferimenti; sostituiti
+   i due non-verificabili (Bordone *Semicond. Sci. Technol.* S312 e Hatano
+   *Proc. ISFQM* 2011) con Bertoni *PRL* 84, 5912 e Roulleau *PRL* 100, 126802;
+   corretta la lista autori di Bliokh; aggiunti i DOI a tutti. Orfano
+   `\cite{bordone}` → `bertoni`.
+2. **Reconciliazione metriche.** `entangletron_metrics.json` autodescrive ogni
+   blocco di convergenza: `convergence_imbalance_by_dx` = `box_sum_legacy`,
+   più un nuovo blocco `convergence_imbalance_continuous` =
+   `continuous_interpolated` importato da `readout_sensitivity.json`.
+3. **Pinning dipendenze** — `requirements-lock.txt` (versioni esatte
+   osservate; matplotlib `3.10.1` = repack Debian `3.10.1+dfsg1`).
+4. **Dead-code annotati** in `potential.py`: `landscape_double_slit` e
+   `landscape_focus` sono INUSATI (nessun riferimento); `landscape_mz` e
+   `phase_sweep` sono VIVI (usati in `gates.py`/`simulate.py` e smoke-test).
+5. **Regression test** numeri headline `tests/test_metrics_regression.py`
+   (pinned @1e-6).
+6. **CI** `.github/workflows/ci.yml` (build dal lock, ricostruzione da sim,
+   smoke+regression).
+7. **Tempi** — chiarito in Discussion: `0.14 ps` è la finestra simulata
+   (source → ~103 nm, sotto i 110 nm del rivelatore); `0.24 ps` è il transito
+   completo source→fine canale (~130 nm). Non sono in conflitto.

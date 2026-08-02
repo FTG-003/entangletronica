@@ -233,3 +233,20 @@ no new physics, and is intended as a compact, well-tested numerical model.
 ---
 
 <div align="center"><sub>Fabrizio Terzi · MIT License</sub></div>
+## Reproducibility & validation (2025-08-02)
+
+- **Dependencies**: install from `requirements-lock.txt` for exact versions
+  (matplotlib is tracked as PyPI `3.10.1`, the portable form of the local
+  Debian `3.10.1+dfsg1`).
+- **Metrics reconciliation**: `results/entangletron_metrics.json` now tags
+  each convergence block with its readout functional —
+  `box_sum_legacy` (raw grid box-sum) and `continuous_interpolated` (imported
+  from `readout_sensitivity.json`). Regenerate with `python scripts/make_figures.py`.
+- **Regression guards**: `tests/test_metrics_regression.py` pins the headline
+  exports (`transfer_slope_per_kphi`, `transfer_linear_r2`, `max_imbalance`) to
+  1e-6 and checks the self-labelling contract.
+- **CI**: `.github/workflows/ci.yml` installs from the lock, rebuilds all
+  figures/metrics from the raw simulation, then runs the full test suite.
+- **Transit-time note**: the paper Discussion distinguishes the simulated
+  window (0.14 ps, source→~103 nm) from the full channel-end transit
+  (0.24 ps); see the paper.

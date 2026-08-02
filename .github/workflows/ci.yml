@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-lock.txt
+
+      - name: Install pinned dependencies (exact, from lock)
+        run: pip install -r requirements-lock.txt
+
+      - name: Install test runner
+        run: pip install pytest
+
+      # Rebuild every committed artefact from the raw simulation so CI checks
+      # end-to-end reproducibility (not just that an old JSON still exists).
+      - name: Rebuild metrics + figures from raw simulation
+        run: python scripts/make_figures.py
+
+      - name: Rebuild paper (LaTeX) is optional here; figures/metrics are the gate
+        run: echo "figures + metrics regenerated"
+
+      - name: Run test suite (incl. headline-number regression pin)
+        run: python -m pytest tests/ -q
+
+      - name: Confirm metrics JSON is the reconciled, self-labelled format
+        run: python - <<'PY'
+          import json
+          m = json.load(open("results/entangletron_metrics.json"))
+          assert m["convergence_imbalance_by_dx"]["readout_functional"] == "box_sum_legacy"
+          assert m["convergence_imbalance_continuous"]["readout_functional"] == "continuous_interpolated"
+          print("metrics reconciliation OK")
+        PY

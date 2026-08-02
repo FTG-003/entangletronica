@@ -1,0 +1,16 @@
+# requirements-lock.txt – exact versions observed in the reproducing environment
+# (Debian "bookworm"-derived python3.12). Generated 2025-08-02 via importlib.metadata.
+# matplotlib is tracked as 3.10.1+dfsg1 locally; +dfsg1 is a Debian repack tag of
+# the PyPI 3.10.1 release, so the portable/installable pin is 3.10.1.
+numpy==2.2.4
+scipy==1.15.3
+matplotlib==3.10.1
+pillow==11.1.0
+# --- transitive, pinned too because they influence bit-identical figure output ---
+contourpy==1.3.1
+cycler==0.12.1
+fonttools==4.57.0
+kiwisolver==1.4.7
+packaging==25.0
+pyparsing==3.1.2
+python-dateutil==2.9.0
