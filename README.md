@@ -111,7 +111,7 @@ These test that the *calculator is correct*, not that a device is special.
 | Observable | Value | Interpretation |
 |---|---|---|
 | Detector imbalance (max) | **0.44** | Interference redistributes probability between bins → a working readout |
-| Rough linearity of the transfer curve | R² ≈ 0.99997 | Self-consistency of the solver in a linear regime (see table above) |
+| Rough linearity of the transfer curve | R² ≈ 0.99997 | Regime statement, not a property of the device — see note below |
 | Fringe contrast | ≥ 0.9 across scan | Clear, resolvable fringes |
 | Input parameters | k₀ = 0.20 nm⁻¹, E = 36.3 meV, λ = 31.4 nm | Plausible *within* an InGaAs 2DEG window, chosen for a clean plot — see [caveats](#limitations--caveats) |
 
@@ -119,6 +119,17 @@ The device operates as a **linear-ish transduction**: a gate parameter in, an
 interference-related output, over a physically sensible operating range.
 This is the *expected* behaviour of double-slit interference, reproduced
 cleanly — not a discovery.
+
+> **Why the transfer looks so linear (measured, not assumed).** Over the full
+> scan (`phase_k ∈ [0, 2.5]`) the −15 meV gate moves the interference figure by
+> only **≈ 0.10 of a fringe period** — a phase of ≈ 0.25 rad per gate unit
+> (dwell-time integral `∫V dt/ħ` at group velocity ≈ 5.5 × 10⁵ m/s). The two-bin
+> detector therefore samples a narrow, near-linear **shoulder of a single lobe**;
+> the scan never crosses a fringe maximum or minimum. That — not a special
+> property of the device — is why R² ≈ 0.99997. A scan spanning several fringe
+> periods would expose the underlying sinusoidal response and the linear fit
+> would degrade. The R² is a *regime* statement about where the scan sits, not a
+> discovery.
 
 ---
 
