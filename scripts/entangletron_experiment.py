@@ -263,16 +263,51 @@ def main():
         "norm_conservation_max_dev": float(np.max(np.abs(tr[:, 4] - 1.0))),
         "detector_plane_x_nm": DET_X,
     }
-    # attach the fixed-time convergence study if it has been run
+    # ---------- convergence study, self-labelled by readout functional ------
+    # Each block declares which readout produced its numbers, so whoever opens
+    # this single file knows what they are looking at (box-sum vs continuous).
     conv_path = os.path.join(RES, "convergence.json")
     if os.path.exists(conv_path):
         conv = json.load(open(conv_path))
         grid_cases = conv.get("grid_cases", conv if isinstance(conv, list) else [])
-        metrics["convergence_imbalance_by_dx"] = [
-            {"dx_nm": c["dx"], "dt": c["dt"], "imbalance": c["imbalance"]}
-            for c in grid_cases
-        ]
+        metrics["convergence_imbalance_by_dx"] = {
+            "readout_functional": "box_sum_legacy",
+            "readout_note": (
+                "lattice box-sum of |psi|^2 on the raw detector grid lines in "
+                "|y|<=14 nm; resolution-sensitive because a coarse grid samples "
+                "a fixed-width box from few lines."
+            ),
+            "values": [
+                {"dx_nm": c["dx"], "dt": c["dt"], "imbalance": c["imbalance"]}
+                for c in grid_cases
+            ],
+        }
         metrics["convergence_under_1pct"] = conv.get("imbalance_converged_under_1pct")
+
+    # continuous (interpolated) readout of the SAME states, imported from the
+    # readout-sensitivity diagnostic so each file is self-consistent.
+    rso_path = os.path.join(RES, "readout_sensitivity.json")
+    if os.path.exists(rso_path):
+        rso = json.load(open(rso_path))
+        cont = []
+        for k, v in sorted(rso["crosscheck_gridsum_vs_continuous"].items(),
+                           key=lambda kv: float(kv[0])):
+            cont.append({"dx_nm": float(k),
+                         "imbalance": v["imbalance_continuous"],
+                         "gridsum_legacy": v["imbalance_gridsum"]})
+        legacy_vals = metrics.get("convergence_imbalance_by_dx", {}).get("values", [])
+        dts = {v["dx_nm"]: v["dt"] for v in legacy_vals}
+        for row in cont:
+            row["dt"] = dts.get(row["dx_nm"])
+        metrics["convergence_imbalance_continuous"] = {
+            "readout_functional": "continuous_interpolated",
+            "source": "results/readout_sensitivity.json",
+            "readout_note": (
+                "continuous functional of the interpolated profile on a 0.1 nm "
+                "axis (readout_sensitivity.py); stable ~0.154 from dx=2 nm."
+            ),
+            "values": cont,
+        }
     with open(os.path.join(RES, "entangletron_metrics.json"), "w") as f:
         json.dump(metrics, f, indent=2)
     print("   metrics:", json.dumps(metrics, indent=2))

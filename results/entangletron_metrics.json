@@ -8,27 +8,62 @@
   "max_bin_visibility": 0.4388659151744817,
   "norm_conservation_max_dev": 1.3233858453531866e-13,
   "detector_plane_x_nm": 110.0,
-  "convergence_imbalance_by_dx": [
-    {
-      "dx_nm": 4.0,
-      "dt": 0.6,
-      "imbalance": 0.3135482280821067
-    },
-    {
-      "dx_nm": 2.0,
-      "dt": 0.3,
-      "imbalance": 0.2336308099185881
-    },
-    {
-      "dx_nm": 1.0,
-      "dt": 0.15,
-      "imbalance": 0.1946004938165571
-    },
-    {
-      "dx_nm": 0.5,
-      "dt": 0.075,
-      "imbalance": 0.17415716970917297
-    }
-  ],
-  "convergence_under_1pct": false
+  "convergence_imbalance_by_dx": {
+    "readout_functional": "box_sum_legacy",
+    "readout_note": "lattice box-sum of |psi|^2 on the raw detector grid lines in |y|<=14 nm; resolution-sensitive because a coarse grid samples a fixed-width box from few lines.",
+    "values": [
+      {
+        "dx_nm": 4.0,
+        "dt": 0.6,
+        "imbalance": 0.3135482280821067
+      },
+      {
+        "dx_nm": 2.0,
+        "dt": 0.3,
+        "imbalance": 0.2336308099185881
+      },
+      {
+        "dx_nm": 1.0,
+        "dt": 0.15,
+        "imbalance": 0.1946004938165571
+      },
+      {
+        "dx_nm": 0.5,
+        "dt": 0.075,
+        "imbalance": 0.17415716970917297
+      }
+    ]
+  },
+  "convergence_under_1pct": false,
+  "convergence_imbalance_continuous": {
+    "readout_functional": "continuous_interpolated",
+    "source": "results/readout_sensitivity.json",
+    "readout_note": "continuous functional of the interpolated profile on a 0.1 nm axis (readout_sensitivity.py); stable ~0.154 from dx=2 nm.",
+    "values": [
+      {
+        "dx_nm": 0.5,
+        "imbalance": 0.15402974436304984,
+        "gridsum_legacy": 0.17415716970917283,
+        "dt": 0.075
+      },
+      {
+        "dx_nm": 1.0,
+        "imbalance": 0.15393076269979003,
+        "gridsum_legacy": 0.19460049381655706,
+        "dt": 0.15
+      },
+      {
+        "dx_nm": 2.0,
+        "imbalance": 0.15348021558579275,
+        "gridsum_legacy": 0.23363080991858817,
+        "dt": 0.3
+      },
+      {
+        "dx_nm": 4.0,
+        "imbalance": 0.1593196934663812,
+        "gridsum_legacy": 0.3135482280821068,
+        "dt": 0.6
+      }
+    ]
+  }
 }
