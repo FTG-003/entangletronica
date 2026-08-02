@@ -175,7 +175,7 @@ this model, ramping $\kphi$ steers the fringe across the two read-out bins.
 \label{sec:fringe}
 
 Figure~\ref{fig:fringe} reports the position $y_p$ of the central fringe peak
-and the profile contrast $C = (\max-\min)/(\max+\min)$ at the detector plane.
+and the profile contrast $C = (\max-\min)\allowbreak/(\max+\min)$ at the detector plane.
 The peak moves monotonically with $\kphi$ while the contrast remains high
 ($C > 0.9$), confirming that the logic output is \emph{displacement-driven}
 interference, not amplitude modulation.
@@ -186,7 +186,7 @@ interference, not amplitude modulation.
 Because the imbalance $\mathcal I$ in Eq.~(\ref{eq:imb}) is a functional of the
 detector profile, we separated the numerical stability of the \emph{wave
 dynamics} from that of the \emph{read-out functional}
-(Figure~\ref{fig:readout}; \texttt{scripts/readout_sensitivity.py}). For the
+(Figure~\ref{fig:readout}; \texttt{scripts/\allowbreak readout\_sensitivity.py}). For the
 same propagated state, the fringe peak, centroid and width are stable under
 grid refinement $\Delta x = \{4,2,1,0.5\}$\,nm and the profile $L^2$ error
 decays near second order; the two-bin imbalance read as a continuous functional
@@ -219,7 +219,7 @@ $\sigma=\SI{10}{nm}$ width and approaching the detector plane at
 $x=\SI{110}{nm}$. The \SI{0.24}{ps} figure, in contrast, is the full
 source-to-channel-end transit over $\approx\SI{130}{nm}$; it is quoted only to
 set the in-flight modulation bandwidth and is not the simulated window. The
-r\'elevant distance is therefore source-to-detector ($\approx\SI{85}{nm}$), not
+relevant distance is therefore source-to-detector ($\approx\SI{85}{nm}$), not
 the channel length.
 
 \section{Conclusions}
@@ -294,8 +294,8 @@ interpolated $P$ is stable at $\approx 0.154$ already at $\Delta x = 2$\,nm;
 read instead as a \emph{box-sum on the raw grid}, it drifts under refinement.
 The apparent non-convergence therefore belongs to the discretised read-out
 functional, not to the wave dynamics (vertical lines: the $\pm10,14,20$\,nm bin
-edges). Reproducible via \texttt{scripts/readout_sensitivity.py} $\rightarrow$
-\texttt{results/readout_sensitivity.json}.}
+edges). Reproducible via \texttt{scripts/readout\_sensitivity.py} $\rightarrow$
+\texttt{results/readout\_sensitivity.json}.}
 \label{fig:readout}
 \end{figure}
 
