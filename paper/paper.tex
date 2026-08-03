@@ -39,7 +39,13 @@ imparts a controlled phase shift during propagation, displacing the interference
 figure at a downstream detector. The split-step solver is unitary to
 $10^{-13}$ (round-off). The simulated transfer characteristic is approximately
 linear with $R^2 = 0.99997$ over a gate-depth scan, with a maximum detector
-imbalance of $0.44$.
+imbalance of $0.44$. The architecture operates in the
+\emph{single-electron coherent spatial superposition} regime: the study
+propagates one delocalised coherent wave whose two-slit paths superpose at
+the detector. The \emph{Entangletronica} name is therefore an architectural
+label for the lens-based gate design, not a claim of multi-particle
+entanglement---there is a single electron and no Bell-type resource, a point
+re-emphasised in Sec.~\ref{sec:intro}.
 \end{abstract}
 
 \section{Introduction}
@@ -48,7 +54,11 @@ imbalance of $0.44$.
 The flying-electron paradigm \cite{bertoni, ji, bliokh} treats the electron not as a
 localised carrier but as a delocalised probability wave launched into a
 ballistic channel. Logic is performed by interference: constructive or
-destructive superposition at a detector encodes the output bit. The central
+destructive superposition at a detector encodes the output bit. Although the
+device is named \emph{Entangletronica}, the physics here is strictly
+single-particle: the interference is a coherent spatial superposition of a
+single flying electron's two paths, and no multi-particle (entangled) degree
+of freedom exists in the model. The central
 engineering question is how to \emph{shape} the wave function in flight with
 electrostatic gates.
 
@@ -96,8 +106,14 @@ with $a_\ell$ the amplitude in meV. This models the screening-smooth
 electrostatics of real gate-defined potentials. Three elements compose the
 device (Fig.~\ref{fig:arch}):
 \begin{description}
-\item[Guide walls] two repulsive Gaussians ($a = \SI{15}{meV}$) at $x=0$ and
-$x=160$ confine the channel laterally.
+\item[Entrance and exit caps] two repulsive Gaussians ($a = \SI{15}{meV}$)
+at $x=0$ and $x=\SI{160}{nm}$ sit at the channel mouth and exit. Placed on the
+propagation axis they act as \emph{longitudinal} entrance/exit caps; they do
+\emph{not} confine the channel \emph{laterally}. The in-plane ($y$) packet is
+thereby left free and is shaped only by the double-slit apertures and the
+phase lens (and, at the detector, by the bin edges studied in
+Sec.~\ref{sec:readout}). This corrects the earlier wording ``confine the
+channel laterally.''
 \item[Double-slit barrier] a repulsive Gaussian sheet at $x=\SI{60}{nm}$,
 $y\in[-34,34]$\,nm, $a=\SI{12}{meV}$, with two transparent apertures of width
 $s=\SI{4}{nm}$ centred at $y=\pm\SI{12}{nm}$: a coherent two-source emitter
@@ -196,6 +212,21 @@ of the interpolated profile is stable at $\approx 0.154$ already at $\Delta x =
 non-convergence of the earlier two-bin imbalance is therefore an artefact of
 the discretised read-out, not of the underlying dynamics --- the solver,
 geometry and read-out are three distinct objects.
+
+Formally, denote by $P_{\Delta x}(y)=|\psi(x_d,y)|^2$ the detector profile
+computed on a grid of pitch $\Delta x$. The 2D wave dynamics converge under
+refinement: the profile $L^2$ error
+\begin{equation}
+\label{eq:L2err}
+L_2(\Delta x)\;=\;\Big[\int\!\big(P_{\Delta x}(y)-P_{0.5\,\mathrm{nm}}(y)\big)^{2}\,dy\Big]^{1/2},
+\end{equation}
+decays $\propto(\Delta x)^{2}$ (near second order) as
+$\Delta x\to0.5\,\mathrm{nm}$, with the fringe peak, centroid and width already
+converged at $\Delta x=\SI{2}{nm}$. The \emph{read-out} is a separate object:
+read as a continuous functional of this same profile the imbalance is stable
+at $\approx0.154$ from $\Delta x=\SI{2}{nm}$ down; read instead as a raw
+lattice box-sum it drifts $0.31\to0.23\to0.20\to0.17$. That drift is an
+\emph{artefact of the discrete summation}, not of the convergent wave dynamics.
 
 \section{Discussion}
 \label{sec:disc}
