@@ -14,6 +14,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 
+# Bit-identical figures across runs: matplotlib embeds the current time in PDF
+# metadata, so without this every regeneration differs only in /CreationDate.
+PDF_METADATA = {"CreationDate": None}
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from entangletronica import potential as P
 from entangletronica import electron
@@ -258,7 +262,7 @@ def main():
         "fig5_fringe": fig_peak(pk),
     }
     for name, fig in figs.items():
-        fig.savefig(os.path.join(FIG, name + ".pdf"))
+        fig.savefig(os.path.join(FIG, name + ".pdf"), metadata=PDF_METADATA)
         fig.savefig(os.path.join(FIG, name + ".png"), dpi=150)
         plt.close(fig)
         print("   wrote", name)

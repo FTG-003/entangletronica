@@ -106,8 +106,6 @@ measured switching experiment.
 
 These test that the *calculator is correct*, not that a device is special.
 
-These test that the *calculator is correct*, not that a device is special.
-
 A **grid-refinement study** (`scripts/convergence_study.py`) reduces the grid
 `Δx = {4, 2, 1, 0.5} nm` (with `Δt` scaled to keep the physical propagation
 time constant) at a fixed gate setting. The norm is exact to round-off at
@@ -167,18 +165,24 @@ cleanly — not a discovery.
 
 ## 4. Reproduce
 
-All figures, the interference animation and the reported metrics regenerate
-from a single command (**~12 s**, deterministic across runs):
+Everything — figures, the interference animation and the reported metrics —
+regenerates deterministically with this short pipeline (**~12 s** for the
+physics part, same output across runs):
 
 ```bash
 pip install -r requirements.txt
-python scripts/make_figures.py     # figures + metrics (figures/*, results/*.json)
-python scripts/make_animation.py   # assets/iframe_flight.gif
-python tests/test_smoke.py         # unitarity + architecture sanity checks
+python scripts/make_figures.py           # fig1–5 + metrics (figures/*, results/entangletron_metrics.json)
+python scripts/make_missing_figures.py   # fig_poisson_mapping, fig_coherence, fig_xor_schematic (paper §2–4)
+python scripts/make_animation.py         # assets/iframe_flight.gif
+python -m pytest tests/ -q               # full suite (smoke + regression pins)
 ```
 
 Outputs: `figures/*.{pdf,png}`, `results/entangletron_metrics.json`,
 `results/*.npy`, `assets/iframe_flight.gif`.
+
+To use `entangletronica` as an importable library (outside the repo scripts),
+`pip install -e .` also works; the paper (optional) is built with
+`pdflatex paper/EQLI_PhaseGate_Benchmark_2026.tex`.
 
 ### Animation — the electron building the interference figure in flight
 
@@ -242,7 +246,7 @@ This study is released on Zenodo and identified by the DOI below; please cite
 the archived version of record:
 
 > **Fabrizio Terzi**, *Flying-Electron Interference Logic via Electrostatic
-> Quantum Lenses (Entangletronica)*, Zenodo, DOI: 10.5281/zenodo.21786336 (2025).
+> Quantum Lenses (Entangletronica)*, Zenodo, DOI: 10.5281/zenodo.21786336 (2026).
 > https://zenodo.org/records/21786336
 
 ## Reproducibility & validation (2025-08-02)

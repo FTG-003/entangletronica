@@ -4,10 +4,46 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "entangletronica"
-version = "0.1.0"
-description = "Flying-electron quantum interference devices engineered with electrostatic gates"
-requires-python = ">=3.9"
-dependencies = ["numpy", "scipy", "matplotlib"]
+version = "2.0.0"
+description = "Reproducible split-step Schrödinger simulations of flying-electron interference in a gate-defined 2DEG double slit"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Fabrizio Terzi", orcid = "https://orcid.org/0000-0001-9131-3520" },
+]
+keywords = [
+    "quantum simulation",
+    "interferometry",
+    "two-dimensional electron gas",
+    "2DEG",
+    "split-step Fourier",
+    "flying-electron",
+    "open science",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.urls]
+Repository = "https://github.com/FTG-003/entangletronica"
+Paper = "https://github.com/FTG-003/entangletronica/blob/main/paper/EQLI_PhaseGate_Benchmark_2026.pdf"
+DOI = "https://zenodo.org/records/21786336"
 
 [tool.setuptools.packages.find]
 include = ["entangletronica*"]

@@ -19,6 +19,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse, Rectangle, FancyArrow
 
+# Bit-identical figures across runs (see entangletron_experiment.py).
+PDF_METADATA = {"CreationDate": None}
+
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIG = os.path.join(HERE, "figures")
 os.makedirs(FIG, exist_ok=True)
@@ -212,7 +215,7 @@ if __name__ == "__main__":
     }
     for name, f in figs.items():
         p = os.path.join(FIG, name + ".pdf")
-        f.savefig(p, bbox_inches="tight")
+        f.savefig(p, bbox_inches="tight", metadata=PDF_METADATA)
         f.savefig(os.path.join(FIG, name + ".png"), dpi=150, bbox_inches="tight")
         plt.close(f)
         print("wrote", p)

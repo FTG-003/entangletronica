@@ -34,13 +34,13 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Data outputs (se generati da script)
-results/*.json
+# Data outputs (generati da script)
+# I JSON di metrica sono tracciati: sono la baseline per
+# tests/test_metrics_regression.py (i .npy, grandi binari rigenerabili, no).
 results/*.npy
 results/*.npz
-!results/.gitkeep
 
 # Keep only final PDF
 *.pdf
-!paper/Entangeltronica.pdf
+!paper/EQLI_PhaseGate_Benchmark_2026.pdf
 !figures/*.pdf

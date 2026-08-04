@@ -44,7 +44,10 @@ def transmission_total(hist):
 def phase_sweep_run(X, Y, dt, Nt, phis, splitter_k=1.0, phase_k=1.0, dx=0.0,
                     psi0=None, x0=P.X0, s=P.S, k0=P.K0, Vwalls=None,
                     y0=0.0):
-    """Run the MZ for a list of phase-lens amplitudes phis (in meV).
+    """Run the MZ for a list of phase-lens depth factors ``phis``.
+
+    ``phis`` is the dimensionless factor ``phase_k`` multiplying the -25 meV
+    phase lens (phase_k = 1 <-> full -25 meV depth).
 
     Returns dict with populations, visibility and the trajectory of the final
     wave function (for movies / snapshots).

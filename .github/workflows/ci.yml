@@ -29,8 +29,11 @@ jobs:
       - name: Rebuild metrics + figures from raw simulation
         run: python scripts/make_figures.py
 
-      - name: Rebuild paper (LaTeX) is optional here; figures/metrics are the gate
-        run: echo "figures + metrics regenerated"
+      - name: Rebuild EQLI paper figures (Poisson mapping, coherence, XOR)
+        run: python scripts/make_missing_figures.py
+
+      - name: Rebuild in-flight animation
+        run: python scripts/make_animation.py
 
       - name: Run test suite (incl. headline-number regression pin)
         run: python -m pytest tests/ -q

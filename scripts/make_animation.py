@@ -1,8 +1,7 @@
 """In-flight animation of the flying electron forming the interference figure.
 
 Produces:
-  figures/electron_flight.gif        (universal animated image)
-  figures/electron_flight.pdf       (single, animate-class frame PDF for paper)
+  assets/iframe_flight.gif    (animated image, referenced by the README)
 
 Run: python scripts/make_animation.py
 """
@@ -19,6 +18,7 @@ from entangletronica import electron
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIG = os.path.join(HERE, "figures")
+ASSETS = os.path.join(HERE, "assets")
 
 NX, NY, DX = 140, 80, 2.0
 X = np.arange(NX) * DX - 40.0
@@ -69,22 +69,13 @@ def main():
         plt.close(f)
         frame_pngs.append(Image.open(fp).convert("RGB"))
 
-    gif_path = os.path.join(FIG, "iframe_flight.gif")
+    os.makedirs(ASSETS, exist_ok=True)
+    gif_path = os.path.join(ASSETS, "iframe_flight.gif")
     frame_pngs[0].save(gif_path, save_all=True, append_images=frame_pngs[1:],
                        duration=500, loop=0)
     print("wrote", gif_path, os.path.getsize(gif_path), "bytes")
     os.remove(os.path.join(FIG, "_frame.png"))
 
-    # also emit individual PDF frames for the `animate` package (paper)
-    for i, (n, p) in enumerate(frames):
-        f, a = plt.subplots(figsize=(8.5, 4))
-        a.imshow(p.T, extent=(X[0], X[-1], Y[0], Y[-1]), origin="lower",
-                 cmap="magma", aspect="auto", vmax=1e-3)
-        a.set_title(f"step {n}/1300")
-        a.set_xlabel("x [nm]"); a.set_ylabel("y [nm]")
-        f.savefig(os.path.join(FIG, f"iframe_{i}.pdf"))
-        plt.close(f)
-    print("wrote iframe_0..4.pdf frames")
     plt.close("all")
 
 

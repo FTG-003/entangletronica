@@ -17,6 +17,19 @@ def _grid():
     return X, Y
 
 
+def test_version_matches_pyproject():
+    """Package version must not drift from pyproject.toml (regression guard
+    for the 0.1.0-vs-v2.0.0 mismatch found in the audit)."""
+    import re
+    from entangletronica import __version__
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    with open(os.path.join(root, "pyproject.toml")) as f:
+        m = re.search(r'^version\s*=\s*"([^"]+)"', f.read(), re.M)
+    assert m, "pyproject.toml has no version field"
+    assert m.group(1) == __version__, \
+        f"pyproject version {m.group(1)!r} != package {__version__!r}"
+
+
 def test_units_conversion():
     assert P.MEV_TO_NAT > 0
     assert P.PS_TO_NAT > 0

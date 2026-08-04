@@ -5,4 +5,4 @@ matplotlib>=3.7
 Pillow>=9.0        # GIF assembly (matplotlib GIF backend)
 
 # paper build (optional)
-# texlive (pdflatex) for paper/paper.tex
+# texlive (pdflatex) for paper/EQLI_PhaseGate_Benchmark_2026.tex

@@ -5,12 +5,13 @@ All potentials are analytic and smooth: physically, gate-defined potentials in a
 hard walls. Energies are in meV, lengths in nm. The solver therefore runs with
 hbar = 1 in natural units; potentials must be normalised accordingly.
 
-Default material parameters (InGaAs 2DEG, the platform of the single-electron
-semiconductor sources of [S-1]):
-    m*  = 0.042 m0          effective mass
-    x0  = 25 nm             wave-packet initial position
-    s   = 12 nm             wave-packet spread
-    k0  = 0.70 nm^-1        central momentum (ballistic reference)
+Default material parameters (InGaAs 2DEG):
+    m* = 0.042 m0    effective mass (used for the unit conversions below)
+    X0 = 25 nm       wave-packet initial position
+    S  = 10 nm       wave-packet spread
+    K0 = 1.0 nm^-1   central momentum (package default; the published
+                     experiment scripts override it to k0 = 0.2 nm^-1,
+                     see scripts/entangletron_experiment.py)
 """
 
 import numpy as np
