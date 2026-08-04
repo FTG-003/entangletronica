@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software and the accompanying study, please cite both the software and the paper."
+type: software
+title: "EQLI / Entangletronica: Electrostatic Quantum-Lens Interferometry in InGaAs 2DEGs"
+abstract: >-
+  Reproducible split-step Schroedinger simulations of a single flying electron
+  through a gate-defined double-slit interferometer in a ballistic 2DEG, with a
+  programmable electrostatic phase lens, a Poisson-Thomas-Fermi voltage mapping,
+  a stochastic dephasing budget, and a scalable two-input XOR gate proposal.
+  Companion to the EQLI preprint.
+authors:
+  - family-names: "Terzi"
+    given-names: "Fabrizio"
+    orcid: "https://orcid.org/0000-0001-9131-3520"
+    affiliation: "Independent Researcher"
+keywords:
+  - flying-electron logic
+  - quantum interferometry
+  - two-dimensional electron gas (2DEG)
+  - split-step Fourier method
+  - electrostatic phase gate
+  - quantum simulation
+license: MIT
+doi: 10.5281/zenodo.21760237
+repository-code: "https://github.com/FTG-003/entangletronica"
+date-released: "2026-08-04"

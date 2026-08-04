@@ -262,3 +262,40 @@ the archived version of record:
 - **Transit-time note**: the paper Discussion distinguishes the simulated
   window (0.14 ps, source→~103 nm) from the full channel-end transit
   (0.24 ps); see the paper.
+
+---
+
+## Repository structure
+
+```
+.
+├── paper/
+│   ├── Entangeltronica.tex      # Main LaTeX source (EQLI paper)
+│   └── Entangeltronica.pdf      # Compiled PDF (10 pages)
+├── figures/                     # Vector PDFs + PNG previews (9 figures)
+├── scripts/
+│   ├── entangletron_experiment.py  # Full experiment + figure pipeline
+│   ├── make_figures.py             # Figure entry point (single source of truth)
+│   ├── make_missing_figures.py     # Poisson-mapping / coherence / XOR figures
+│   ├── convergence_study.py        # Grid-refinement study
+│   ├── readout_sensitivity.py      # Readout-functional analysis
+│   └── make_animation.py           # In-flight interference animation
+├── entangletronica/             # Simulation package (potential, electron, gates)
+├── results/                     # Simulation outputs (gitignored)
+├── tests/                       # Smoke + metrics-regression tests
+├── assets/                      # Animation artifacts
+├── .github/workflows/ci.yml     # CI: clean-install rebuild + tests
+├── CITATION.cff                 # Citation metadata (Zenodo/GitHub)
+├── CONTRIBUTING.md              # Contribution guide
+└── CODE_OF_CONDUCT.md           # Community standards
+```
+
+---
+
+## Contributing & community
+
+- **Contribute**: see [`CONTRIBUTING.md`](CONTRIBUTING.md) — ground rules,
+  validation suite, and paper-change workflow.
+- **Community standards**: [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+- **License**: [MIT](LICENSE).
+- **Citation metadata**: [`CITATION.cff`](CITATION.cff) (Zenodo-ready).

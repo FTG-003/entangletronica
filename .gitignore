@@ -1,31 +1,46 @@
+# LaTeX compilation artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.bbl
+*.blg
+*.nav
+*.snm
+*.vrb
+*.tdo
+*.lof
+*.lot
+
 # Python
 __pycache__/
-*.py[cod]
 *.egg-info/
-.eggs/
-build/
-dist/
-
-# Environments
-.env
-.venv/
-venv/
+*.pyc
+*.pyo
+.Python
 env/
+venv/
 
-# Editors / OS
+# OS / Editor
+.DS_Store
+Thumbs.db
+*~
+*.bak
+*.swp
+*.swo
 .vscode/
 .idea/
-.DS_Store
-*.swp
 
-# LaTeX build artifacts
-paper/*.aux
-paper/*.log
-paper/*.out
-paper/*.toc
-paper/*.bbl
-paper/*.blg
-
-# Generated binary arrays / temp
+# Data outputs (se generati da script)
+results/*.json
 results/*.npy
-_frames/
+results/*.npz
+!results/.gitkeep
+
+# Keep only final PDF
+*.pdf
+!paper/Entangeltronica.pdf
+!figures/*.pdf
