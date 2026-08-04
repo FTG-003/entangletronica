@@ -270,8 +270,8 @@ the archived version of record:
 ```
 .
 ├── paper/
-│   ├── Entangeltronica.tex      # Main LaTeX source (EQLI paper)
-│   └── Entangeltronica.pdf      # Compiled PDF (10 pages)
+│   ├── EQLI_PhaseGate_Benchmark_2026.tex   # Main LaTeX source (EQLI paper)
+│   └── EQLI_PhaseGate_Benchmark_2026.pdf    # Compiled PDF (10 pages)
 ├── figures/                     # Vector PDFs + PNG previews (9 figures)
 ├── scripts/
 │   ├── entangletron_experiment.py  # Full experiment + figure pipeline

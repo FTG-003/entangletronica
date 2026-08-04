@@ -45,11 +45,11 @@ Open an issue with a minimal reproduction. For numeric issues, include:
 
 ### LaTeX / paper changes
 
-If you touch `paper/Entangeltronica.tex`:
+If you touch `paper/EQLI_PhaseGate_Benchmark_2026.tex`:
 - rebuild with `pdflatex` (3 passes) and check the log is clean
   (no undefined references, no overfull boxes > 3 pt);
 - verify every new `\cite` has a `\bibitem` and every DOI resolves;
-- add the regenerated `paper/Entangeltronica.pdf` to the PR.
+- add the regenerated `paper/EQLI_PhaseGate_Benchmark_2026.pdf` to the PR.
 
 ## Style
 

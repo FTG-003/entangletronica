@@ -38,6 +38,12 @@ BARRIER_X = 60.0    # barrier position
 PHASE_X = 68.0      # phase lens behind upper slit
 DET_X = 110.0       # detector plane
 
+# Gate-voltage mapping (Sec. 2.2 of the paper): phase_k = 1 <-> V0 = -15 meV
+# <-> V_g = -0.3 V, i.e. the lens-depth factor k_phi maps linearly onto the
+# physical gate voltage of the metallic finger.  Figures 5/6 (transfer and
+# fringe) are labelled in volts, not in the toy-model factor k_phi.
+VG_PER_KPHI = -0.3    # [V] per unit phase_k (negative: attractive lens)
+
 
 def young_landscape(x, y, Vg=0.0, phase_k=0.0, barrier_k=1.0, barrier_a=12.0):
     """Double slit at y=+-SLIT_Y + electrostatic phase gate on the upper slit."""
@@ -191,11 +197,24 @@ def fig_interference():
 
 
 def fig_transfer(data):
+    """Transfer characteristic on the physical gate-voltage axis.
+
+    The simulated lens-depth factor k_phi is mapped to V_g via the Sec. 2.2
+    Poisson--Thomas--Fermi coupling (k_phi = 1 <-> V_g = -0.3 V).  The shaded
+    span marks the shallow-lens operating window |V_g| <= 0.3 V where the
+    voltage-to-potential mapping is linear; the deeper-lens tail is an
+    extrapolation of the phase model beyond linear screening.
+    """
+    vg = data[:, 0] * VG_PER_KPHI
     fig, ax = plt.subplots(figsize=(7.5, 4))
-    ax.plot(data[:, 0], data[:, 1], "o-", color="C2", lw=1.8)
+    ax.plot(vg, data[:, 1], "o-", color="C2", lw=1.8)
     ax.axhline(0, color="k", lw=0.7)
-    ax.set_xlabel("gate depth factor $k_\\phi$  (0 = off, 1 = $-15$ meV)")
-    ax.set_ylabel("detector imbalance  $(P_U-P_L)/(P_U+P_L)$")
+    ax.axvline(-0.3, ls="--", color="0.45", lw=1.0)
+    ax.axvspan(-0.3, 0, color="C4", alpha=0.10)
+    ax.text(-0.145, 0.34, "shallow-lens\noperating regime", fontsize=8,
+            ha="center", color="C4")
+    ax.set_xlabel(r"gate voltage $V_g$ [V]")
+    ax.set_ylabel(r"detector imbalance $\mathcal{I}=(P_U-P_L)/(P_U+P_L)$")
     ax.set_title("Transfer characteristic: gate-controlled interference logic")
     ax.grid(alpha=0.3)
     fig.tight_layout()
@@ -203,13 +222,15 @@ def fig_transfer(data):
 
 
 def fig_peak(data):
+    """Fringe displacement and contrast on the physical gate-voltage axis."""
+    vg = data[:, 0] * VG_PER_KPHI
     fig, ax = plt.subplots(figsize=(7.5, 4))
-    ax.plot(data[:, 0], data[:, 1], "s-", color="C3", lw=1.8, label="fringe peak $y_p$")
-    ax.plot(data[:, 0], data[:, 2], "o-", color="C1", lw=1.8, label="profile contrast")
-    ax.set_xlabel("gate depth factor $k_\\phi$")
+    ax.plot(vg, data[:, 1], "s-", color="C3", lw=1.8, label="fringe peak $y_p$")
+    ax.plot(vg, data[:, 2], "o-", color="C1", lw=1.8, label="profile contrast")
+    ax.set_xlabel(r"gate voltage $V_g$ [V]")
     ax.set_ylabel("peak position [nm] / contrast")
     ax.legend(); ax.grid(alpha=0.3)
-    ax.set_title("Fringe displacement and contrast vs gate")
+    ax.set_title("Fringe displacement and contrast vs gate voltage")
     fig.tight_layout()
     return fig
 
@@ -251,17 +272,24 @@ def main():
     r2 = 1 - resid.var() / imb.var()
     imax = np.abs(imb).max()
     vis_max = np.abs((tr[:, 2] - tr[:, 3]) / (tr[:, 2] + tr[:, 3] + 1e-12)).max()
+    # Physical-unit sensitivities from the Sec-2.2 mapping V_g = -0.3*k_phi.
+    shallow = k <= 1.0                  # shallow-lens operating window |V_g| <= 0.3 V
+    ms, _ = np.polyfit(k[shallow], imb[shallow], 1)
     metrics = {
         "energy_meV": 0.5 * K0 ** 2 / P.MEV_TO_NAT,
         "deBroglie_nm": 2 * np.pi / K0,
         # Young two-slit fringe spacing at the detector plane: d_l = (L*lambda)/a
         "fringe_period_est_nm": (DET_X - BARRIER_X) * (2 * np.pi / K0) / (2 * SLIT_Y),
         "transfer_slope_per_kphi": float(m),
+        "transfer_slope_per_v": float(m / (-VG_PER_KPHI)),
+        "transfer_sensitivity_sv_shallow_per_v": float(ms / (-VG_PER_KPHI)),
         "transfer_linear_r2": float(r2),
         "max_imbalance": float(imax),
+        "max_imbalance_at_vg_v": float(VG_PER_KPHI * k[np.argmax(np.abs(imb))]),
         "max_bin_visibility": float(vis_max),
         "norm_conservation_max_dev": float(np.max(np.abs(tr[:, 4] - 1.0))),
         "detector_plane_x_nm": DET_X,
+        "vg_mapping_v_per_kphi": VG_PER_KPHI,
     }
     # ---------- convergence study, self-labelled by readout functional ------
     # Each block declares which readout produced its numbers, so whoever opens

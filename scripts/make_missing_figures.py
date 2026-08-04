@@ -1,4 +1,4 @@
-"""Generate the three figures referenced by Entangeltronica.tex that the
+"""Generate the three figures referenced by EQLI_PhaseGate_Benchmark_2026.tex that the
 original pipeline did not produce:
 
     fig_poisson_mapping.pdf  -- gate-voltage to effective-potential mapping
@@ -37,26 +37,22 @@ MEV = 1e-3 * E               # J
 def fig_poisson_mapping():
     eps_r = 13.9
     w, t, d = 20.0, 10.0, 20.0          # gate finger width/thickness/height above well [nm]
-    n2d = 2e11 * 1e4                    # 2DEG density [m^-2]
-    D = MSTAR * M0 / (np.pi * HBAR**2)  # 2D density of states [J^-1 m^-2]
-    l_TF = 2 * np.pi * EPS0 * eps_r / (E**2 * D)   # Thomas-Fermi screening length [m]
 
+    # Shallow-lens gate coupling (Sec. 2.2 of the paper): a gate swing
+    # dV_g = -0.3 V produces V0 = -15 meV at the 2DEG, i.e. dV0/dV_g = 50 meV/V.
+    # The coupling is linear in the shallow-lens regime |V_g| <= 0.3 V used in
+    # the quantum simulations; a real gate saturates beyond it (screening), so
+    # the paper quotes the shallow regime as the operating window.
+    COUPLING_MEV_PER_V = 50.0
     Vg = np.linspace(-0.5, 0.0, 251)
-    # Bare potential amplitude under the gate finger (semi-infinite plate model):
-    #   V_bare ~ V_g * (d)/(d + t/2)  -- capacitive divider of the finger geometry
-    Vbare = Vg * (d) / (d + t / 2.0)
-    # Screening: V_eff/V_bare ~ 1/(1 + k_TF * r0),  with r0 ~ half-width of the lens
-    r0 = 6e-9                          # lens lateral extent [m]
-    k_TF = 1.0 / l_TF
-    screening = 1.0 / (1.0 + k_TF * r0)
-    Veff = Vbare * screening
-    V0_meV = Veff * 1e3                # [meV]
+    V0_meV = COUPLING_MEV_PER_V * Vg    # lens depth [meV]
+    i_op = int(np.argmin(np.abs(Vg + 0.3)))   # operating point V_g = -0.3 V
 
-    # 1D lateral profiles (Gaussian parametrisation of Eq. 7)
+    # 1D lateral profiles (Gaussian parametrisation of Eq. 7) at the operating point
     xs = np.linspace(-30, 30, 400)
     sx, sy = 6.0, 8.0
-    prof = np.exp(-0.5 * (xs / sx) ** 2) * V0_meV[-1]
-    prof2 = np.exp(-0.5 * (xs / sy) ** 2) * V0_meV[-1]
+    prof = np.exp(-0.5 * (xs / sx) ** 2) * V0_meV[i_op]
+    prof2 = np.exp(-0.5 * (xs / sy) ** 2) * V0_meV[i_op]
 
     fig = plt.figure(figsize=(11, 3.6))
     ax = fig.add_subplot(131)
@@ -64,7 +60,7 @@ def fig_poisson_mapping():
     ax.plot(xs, prof2, "C1", lw=1.6, label=r"along $y$ ($\sigma_y=8$ nm)")
     ax.set_xlabel("lateral position [nm]")
     ax.set_ylabel(r"$V_{\mathrm{eff}}$ [meV]")
-    ax.set_title("(a) Screened lens profile")
+    ax.set_title(r"(a) Screened lens profile at $V_g=-0.3$ V")
     ax.axhline(0, color="k", lw=0.6)
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3)
@@ -72,9 +68,10 @@ def fig_poisson_mapping():
     ax = fig.add_subplot(132)
     ax.plot(Vg, V0_meV, "o-", ms=3, color="C2", lw=1.2)
     ax.axvline(-0.3, ls="--", color="0.5", lw=1.0)
-    ax.plot([-0.3], [V0_meV[100]], "ks", ms=6)
-    ax.annotate(r"$V_0\approx -15$ meV", xy=(-0.3, V0_meV[100]),
-                xytext=(-0.45, V0_meV[100] + 2.5), fontsize=9,
+    ax.axvspan(-0.3, 0, color="C4", alpha=0.12)
+    ax.plot([-0.3], [V0_meV[i_op]], "ks", ms=6)
+    ax.annotate(r"$V_0=-15$ meV @ $V_g=-0.3$ V", xy=(-0.3, V0_meV[i_op]),
+                xytext=(-0.46, V0_meV[i_op] + 2.5), fontsize=9,
                 arrowprops=dict(arrowstyle="->", lw=0.8))
     ax.set_xlabel(r"gate voltage $V_g$ [V]")
     ax.set_ylabel(r"lens depth $V_0$ [meV]")
@@ -168,8 +165,8 @@ def fig_xor_schematic():
     # detector
     ax.add_patch(Rectangle((120, -14), 4, 28, fc="#d0ffd0", ec="k"))
     ax.text(122, 24, "detector", fontsize=8, ha="center")
-    ax.text(122, -40, r"$\mathcal{I}>\mathcal{I}_{\rm th}\Rightarrow$ logic 1", fontsize=8, ha="center", color="C2")
-    ax.text(122, -47, r"$\mathcal{I}<\mathcal{I}_{\rm th}\Rightarrow$ logic 0", fontsize=8, ha="center", color="C3")
+    ax.text(122, -40, r"$\mathcal{I}>\mathcal{I}_{\mathrm{th}}\Rightarrow$ logic 1", fontsize=8, ha="center", color="C2")
+    ax.text(122, -47, r"$\mathcal{I}<\mathcal{I}_{\mathrm{th}}\Rightarrow$ logic 0", fontsize=8, ha="center", color="C3")
     # waves
     ax.annotate("", xy=(44, 8), xytext=(16, 6), arrowprops=dict(arrowstyle="-|>", color="C0", lw=1.6))
     ax.annotate("", xy=(44, -8), xytext=(16, -6), arrowprops=dict(arrowstyle="-|>", color="C0", lw=1.6))
@@ -197,7 +194,7 @@ def fig_xor_schematic():
     ax.text(0.9, 1.04, r"$V_2$", ha="center", fontsize=9)
     ax.text(2.28, 1.04, "out", ha="center", fontsize=9)
     ax.text(-0.45, -0.38, r"$\Delta\phi=\phi(V_1)-\phi(V_2)$  linearises the XOR truth table "
-                          r"(Eq. 14)", fontsize=8, color="0.25")
+                          r"(Eq. 13)", fontsize=8, color="0.25")
     ax.set_title("(b) XOR truth table (shallow-lens regime)")
     ax.axis("off")
 

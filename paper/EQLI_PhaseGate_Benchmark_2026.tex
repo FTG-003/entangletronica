@@ -4,7 +4,7 @@
 %  
 %  Based on numerical split-step Schroedinger propagation with extended
 %  electrostatics, dephasing budget, and logic-gate scalability analysis.
-%  Compile: pdflatex paper.tex  (or latexmk -pdf)
+%  Compile: pdflatex EQLI_PhaseGate_Benchmark_2026.tex  (or latexmk -pdf)
 % =============================================================================
 \documentclass[11pt,a4paper]{article}
 
@@ -226,8 +226,11 @@ $\delta V_{\text{th}}(\mathbf{r},t)$ with zero mean and correlator~\cite{bylande
 \label{eq:dephasing}
 \end{equation}
 where $\tau_\phi(T)$ is the single-particle dephasing time. For InGaAs 2DEGs 
-with mobility $\mu$, we adopt the empirical form of
-Eq.~(\ref{eq:tau_phi})~\cite{roulleau2008}
+with mobility $\mu$, we adopt the empirical power-law form of
+Eq.~(\ref{eq:tau_phi}), adapted from edge-state coherence measurements in the 
+integer quantum Hall regime~\cite{roulleau2008}; the same $T^{-p}$ behaviour 
+with $p\approx1$--$2$ is reported for bulk 2DEGs, so we use the form here as 
+a generic envelope rather than a device-specific calibration.
 \begin{equation}
 \tau_\phi(T) \approx \tau_0\Big(\frac{T_0}{T}\Big)^p,
 \qquad p\approx 1\text{--}2,
@@ -284,12 +287,16 @@ define the imbalance of Eq.~(\ref{eq:imb})
 \mathcal{I}(V_g) = \frac{P_U - P_L}{P_U + P_L}.
 \label{eq:imb}
 \end{equation}
-Figure~\ref{fig:transfer} shows $\mathcal{I}$ vs. gate voltage (via the 
-mapping $V_g\to V_0$ of Sec.~\ref{sec:electrostatics}). The response is 
-linear, $\mathcal{I}\approx \mathcal{I}_0 + S_V V_g$, with sensitivity 
-$S_V\approx\SI{0.48}{V^{-1}}$ and $R^2=0.99997$ in the shallow-lens regime. 
-The maximum simulated imbalance is $0.44$ at $V_g\approx\SI{-0.35}{V}$. The 
-linearity follows directly from Eq.~(\ref{eq:phase}): $\phi\propto V_0\propto V_g$.
+Figure~\ref{fig:transfer} shows $\mathcal{I}$ vs. gate voltage $V_g$ (via the 
+mapping $V_g\to V_0$ of Sec.~\ref{sec:electrostatics}). In the shallow-lens 
+operating window ($|V_g|\lesssim\SI{0.3}{V}$, shaded in the figure) the response 
+is linear, $\mathcal{I}\approx\mathcal{I}_0+S_V V_g$, with sensitivity 
+$S_V\approx\SI{0.48}{V^{-1}}$ and $R^2=0.99997$. The recorded scan extends to 
+$V_g=\SI{-0.75}{V}$; the maximum simulated imbalance is $0.44$ at this deepest 
+setting, an extrapolation of the phase model beyond the linear-screening window 
+(for a real gate the coupling $V_0(V_g)$ saturates). The linearity follows 
+directly from Eq.~(\ref{eq:phase}): $\phi\propto V_0$, with $V_0\propto V_g$ in 
+the shallow-lens regime.
 
 \subsection{Fringe displacement and contrast}
 \label{sec:fringe}
@@ -501,12 +508,13 @@ cross-section of the heterostructure (not to scale).}
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.85\linewidth]{../figures/fig_poisson_mapping.pdf}
-\caption{\textbf{Gate-voltage to effective-potential mapping.} (a) Bare 
-electrostatic potential $V_{\text{bare}}$ from the Poisson equation for a 
-\SI{20}{nm} gate finger at $V_g=\SI{-0.3}{V}$. (b) Screened effective 
-potential $V_{\text{eff}}$ after Thomas--Fermi convolution. (c) Amplitude 
-$V_0$ and widths $\sigma_{x,y}$ vs. $V_g$, showing the linear shallow-lens 
-regime (shaded) used in the quantum simulations.}
+\caption{\textbf{Gate-voltage to effective-potential mapping.} (a) Screened 
+effective lens profile $V_{\text{eff}}$ at the operating point 
+$V_g=\SI{-0.3}{V}$: Gaussian parametrisation of Eq.~(\ref{eq:veff}) with 
+$V_0\approx\SI{-15}{meV}$, $\sigma_x=\SI{6}{nm}$ and $\sigma_y=\SI{8}{nm}$. 
+(b) Lens depth $V_0$ vs. $V_g$: linear in the shallow-lens regime (shaded, 
+$|V_g|\le\SI{0.3}{V}$) with a $\SI{50}{meV/V}$ coupling. (c) Linear fit in 
+the shallow-lens regime used in the quantum simulations.}
 \label{fig:poisson}
 \end{figure}
 
@@ -534,9 +542,12 @@ pure fringe shift with preserved envelope confirms geometric-phase control.}
 \centering
 \includegraphics[width=0.72\linewidth]{../figures/fig4_transfer.pdf}
 \caption{\textbf{Transfer characteristic.} Detector imbalance 
-$\mathcal{I}$ vs. gate voltage $V_g$ (via the mapping of 
-Fig.~\ref{fig:poisson}). Linear response in the shallow-lens regime 
-($R^2=0.99997$) with sensitivity $S_V\approx\SI{0.48}{V^{-1}}$.}
+$\mathcal{I}$ vs. gate voltage $V_g$ (mapping $V_g\to V_0$ of 
+Fig.~\ref{fig:poisson}). The shallow-lens operating window 
+($|V_g|\le\SI{0.3}{V}$, shaded) is linear with sensitivity 
+$S_V\approx\SI{0.48}{V^{-1}}$ and $R^2=0.99997$; the deeper-lens tail 
+($|V_g|>\SI{0.3}{V}$) is an extrapolation of the phase model beyond the 
+linear-screening window.}
 \label{fig:transfer}
 \end{figure}
 
