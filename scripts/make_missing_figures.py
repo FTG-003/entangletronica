@@ -176,10 +176,10 @@ def fig_xor_schematic():
     ax = fig.add_subplot(122)
     ax.set_xlim(-0.6, 2.6); ax.set_ylim(-0.5, 1.1)
     rows = [
-        ("0", "0", "balanced", "0 / 1 (reset)", "grey"),
-        ("0", "1", r"$V_1<V_2$", "0", "C3"),
-        ("1", "0", r"$V_1>V_2$", "1", "C2"),
-        ("1", "1", "balanced", "0 / 1 (reset)", "grey"),
+        ("0", "0", "balanced (reset)", "0 / 1", "grey"),
+        ("0", "1", "lower lens on", "0", "C3"),
+        ("1", "0", "upper lens on", "1", "C2"),
+        ("1", "1", "balanced (reset)", "0 / 1", "grey"),
     ]
     for i, (v1, v2, cond, out, col) in enumerate(rows):
         y = 0.92 - i * 0.34

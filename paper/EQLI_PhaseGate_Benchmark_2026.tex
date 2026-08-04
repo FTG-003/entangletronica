@@ -10,6 +10,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{lmodern}   % Latin Modern: clean text extraction (ligature-safe ToUnicode)
 \usepackage[english]{babel}
 \usepackage[a4paper,margin=2.4cm]{geometry}
 \usepackage{amsmath,amssymb,amsfonts}
@@ -289,9 +290,15 @@ define the imbalance of Eq.~(\ref{eq:imb})
 \end{equation}
 Figure~\ref{fig:transfer} shows $\mathcal{I}$ vs. gate voltage $V_g$ (via the 
 mapping $V_g\to V_0$ of Sec.~\ref{sec:electrostatics}). In the shallow-lens 
-operating window ($|V_g|\lesssim\SI{0.3}{V}$, shaded in the figure) the response 
-is linear, $\mathcal{I}\approx\mathcal{I}_0+S_V V_g$, with sensitivity 
-$S_V\approx\SI{0.48}{V^{-1}}$ and $R^2=0.99997$. The recorded scan extends to 
+operating window ($|V_g|\lesssim 0.3\,$V, shaded in the figure) the response 
+is linear, $\mathcal{I}\approx\mathcal{I}_0+S_V V_g$, with 
+$S_V=\mathrm{d}\mathcal{I}/\mathrm{d}V_g\approx\SI{-0.48}{V^{-1}}$ (negative) 
+and $R^2=0.99997$. The sign is physically fixed: the lens is attractive 
+($V_0\propto V_g<0$), so a more negative $V_g$ deepens $V_0$, shifts 
+probability toward the upper detector and raises $\mathcal{I}$ 
+($\Delta\mathcal{I}\approx+0.14$ per $-0.3\,$V of swing); equivalently 
+$\mathcal{I}\approx\mathcal{I}_0+|S_V|\,|V_g|$ with 
+$|S_V|\approx\SI{0.48}{V^{-1}}$. The recorded scan extends to 
 $V_g=\SI{-0.75}{V}$; the maximum simulated imbalance is $0.44$ at this deepest 
 setting, an extrapolation of the phase model beyond the linear-screening window 
 (for a real gate the coupling $V_0(V_g)$ saturates). The linearity follows 
@@ -411,17 +418,20 @@ architecture using \emph{two} phase lenses, one behind each slit
 B (lower slit) by input $V_2$. The total phase difference is 
 $\Delta\phi = \phi(V_1) - \phi(V_2)$. The detector imbalance becomes
 \begin{equation}
-\mathcal{I}(V_1,V_2) = \mathcal{I}_0 + S_V(V_1 - V_2).
+\mathcal{I}(V_1,V_2) = \mathcal{I}_0 + S_V(V_1 - V_2),
 \label{eq:xor}
 \end{equation}
-
-Setting threshold $\mathcal{I}_{\text{th}}=\mathcal{I}_0$, the output is:
+with $S_V\approx\SI{-0.48}{V^{-1}}$ as in Sec.~\ref{sec:transfer}; the binary 
+inputs are encoded as $V_i=-\mathcal{V}_{\text{on}}\,b_i$ with $b_i\in\{0,1\}$ 
+($b_i=1$: lens engaged). Setting threshold $\mathcal{I}_{\text{th}}=\mathcal{I}_0$, 
+the output is:
 \begin{itemize}
   \item $\mathcal{I}>\mathcal{I}_{\text{th}}$ $\Rightarrow$ logic 1 (constructive 
-  upper dominance) when $V_1>V_2$;
-  \item $\mathcal{I}<\mathcal{I}_{\text{th}}$ $\Rightarrow$ logic 0 when $V_1<V_2$;
+  upper dominance): upper lens deeper, $V_1<V_2$ (binary input $10$);
+  \item $\mathcal{I}<\mathcal{I}_{\text{th}}$ $\Rightarrow$ logic 0: lower lens 
+  deeper, $V_1>V_2$ (binary input $01$);
   \item $\mathcal{I}=\mathcal{I}_{\text{th}}$ $\Rightarrow$ undefined (balanced 
-  input).
+  input, $00$ or $11$).
 \end{itemize}
 
 Equation~(\ref{eq:xor}) is the linearised XOR truth table in the shallow-lens 
@@ -435,10 +445,14 @@ anyons, trading error resilience for a far simpler fabrication and control
 stack.
 
 \paragraph{Error tolerance.} A phase error $\delta\phi$ reduces the visibility 
-by $\Delta C \approx C_0(\delta\phi)^2/2$. To maintain $C>0.5$, the rms 
-voltage noise on each gate must satisfy 
-$\delta V_{\text{rms}} < \hbar v_g/(e S_V \sigma_x) \approx \SI{0.5}{mV}$, a 
-specification well within the reach of cryogenic low-noise electronics.
+by $\Delta C \approx C_0(\delta\phi)^2/2$. From Eq.~(\ref{eq:phase}), 
+$\mathrm{d}\phi/\mathrm{d}V_g\approx\SI{1.0}{rad/V}$ at the operating point, 
+so an rms voltage noise of $\SI{0.5}{mV}$ per gate gives 
+$\delta\phi_{\text{rms}}\approx\SI{0.5}{mrad}$ and $\Delta C\approx10^{-7}$: 
+negligible. The contrast bound $C>0.5$ (starting from $C_0\approx0.9$) is only 
+approached for $\delta\phi_{\text{rms}}\approx\SI{0.9}{rad}$, i.e. 
+$\delta V_{\text{rms}}\approx\SI{1}{V}$; the $\SI{0.5}{mV}$ noise target is 
+therefore comfortably within the reach of cryogenic low-noise electronics.
 
 \section{Conclusions}
 \label{sec:concl}
@@ -513,7 +527,7 @@ effective lens profile $V_{\text{eff}}$ at the operating point
 $V_g=\SI{-0.3}{V}$: Gaussian parametrisation of Eq.~(\ref{eq:veff}) with 
 $V_0\approx\SI{-15}{meV}$, $\sigma_x=\SI{6}{nm}$ and $\sigma_y=\SI{8}{nm}$. 
 (b) Lens depth $V_0$ vs. $V_g$: linear in the shallow-lens regime (shaded, 
-$|V_g|\le\SI{0.3}{V}$) with a $\SI{50}{meV/V}$ coupling. (c) Linear fit in 
+$|V_g|\le 0.3\,$V) with a $\SI{50}{meV/V}$ coupling. (c) Linear fit in 
 the shallow-lens regime used in the quantum simulations.}
 \label{fig:poisson}
 \end{figure}
@@ -544,9 +558,9 @@ pure fringe shift with preserved envelope confirms geometric-phase control.}
 \caption{\textbf{Transfer characteristic.} Detector imbalance 
 $\mathcal{I}$ vs. gate voltage $V_g$ (mapping $V_g\to V_0$ of 
 Fig.~\ref{fig:poisson}). The shallow-lens operating window 
-($|V_g|\le\SI{0.3}{V}$, shaded) is linear with sensitivity 
-$S_V\approx\SI{0.48}{V^{-1}}$ and $R^2=0.99997$; the deeper-lens tail 
-($|V_g|>\SI{0.3}{V}$) is an extrapolation of the phase model beyond the 
+($|V_g|\le 0.3\,$V, shaded) is linear, $\mathcal{I}\approx\mathcal{I}_0+S_V V_g$, 
+with $S_V\approx\SI{-0.48}{V^{-1}}$ and $R^2=0.99997$; the deeper-lens tail 
+($|V_g|>0.3\,$V) is an extrapolation of the phase model beyond the 
 linear-screening window.}
 \label{fig:transfer}
 \end{figure}

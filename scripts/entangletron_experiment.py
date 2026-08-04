@@ -281,8 +281,8 @@ def main():
         # Young two-slit fringe spacing at the detector plane: d_l = (L*lambda)/a
         "fringe_period_est_nm": (DET_X - BARRIER_X) * (2 * np.pi / K0) / (2 * SLIT_Y),
         "transfer_slope_per_kphi": float(m),
-        "transfer_slope_per_v": float(m / (-VG_PER_KPHI)),
-        "transfer_sensitivity_sv_shallow_per_v": float(ms / (-VG_PER_KPHI)),
+        "transfer_slope_per_v": float(m / VG_PER_KPHI),   # dI/dVg < 0 (attractive lens)
+        "transfer_sensitivity_sv_shallow_per_v": float(ms / VG_PER_KPHI),
         "transfer_linear_r2": float(r2),
         "max_imbalance": float(imax),
         "max_imbalance_at_vg_v": float(VG_PER_KPHI * k[np.argmax(np.abs(imb))]),
