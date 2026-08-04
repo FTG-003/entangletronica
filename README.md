@@ -1,7 +1,6 @@
 <div align="center">
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21786336.svg)](https://doi.org/10.5281/zenodo.21786336)
-
 # Flying-Electron Interference Logic via Electrostatic Quantum Lenses
 
 ### Entangletronica
