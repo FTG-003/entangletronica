@@ -29,6 +29,9 @@ jobs:
       - name: Rebuild metrics + figures from raw simulation
         run: python scripts/make_figures.py
 
+      - name: Rebuild stochastic dephasing ensemble (JSON before EQLI figures/tests)
+        run: python scripts/ensemble_coherence.py
+
       - name: Rebuild EQLI paper figures (Poisson mapping, coherence, XOR)
         run: python scripts/make_missing_figures.py
 

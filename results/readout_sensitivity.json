@@ -3,64 +3,64 @@
     {
       "dx": 4.0,
       "norm": 1.0,
-      "max_pos_nm": 8.00000000000054,
-      "centroid_nm": 3.155617178390085,
-      "width_nm": 14.923509900244872,
-      "imbalance_A_bin14": 0.15931969346638117,
-      "imbalance_B_bin20": 0.19575242182736183,
-      "imbalance_C_bin10": 0.12207648378301258,
-      "profile_L2_vs_finest": 0.006921915115741261
+      "max_pos_nm": 12.000000000000597,
+      "centroid_nm": 5.854103582284812,
+      "width_nm": 13.873975978023545,
+      "imbalance_A_bin14": 0.2974995818788057,
+      "imbalance_B_bin20": 0.3574604379173656,
+      "imbalance_C_bin10": 0.23283703387475832,
+      "profile_L2_vs_finest": 0.004427855609366221
     },
     {
       "dx": 2.0,
       "norm": 1.0,
-      "max_pos_nm": 6.000000000000512,
-      "centroid_nm": 3.137682861197889,
-      "width_nm": 14.892412784797619,
-      "imbalance_A_bin14": 0.15348021558579267,
-      "imbalance_B_bin20": 0.19001582969214417,
-      "imbalance_C_bin10": 0.11719521949752415,
-      "profile_L2_vs_finest": 0.001759057839042279
+      "max_pos_nm": 10.000000000000568,
+      "centroid_nm": 5.8670761695440925,
+      "width_nm": 13.861367510300175,
+      "imbalance_A_bin14": 0.29358267643237174,
+      "imbalance_B_bin20": 0.35420677587565613,
+      "imbalance_C_bin10": 0.2292828075571029,
+      "profile_L2_vs_finest": 0.001596555182420235
     },
     {
       "dx": 1.0,
       "norm": 1.0,
-      "max_pos_nm": 7.000000000000526,
-      "centroid_nm": 3.1465597806606573,
-      "width_nm": 14.890019562267966,
-      "imbalance_A_bin14": 0.15393076269979009,
-      "imbalance_B_bin20": 0.19042566707373512,
-      "imbalance_C_bin10": 0.11756343147855011,
-      "profile_L2_vs_finest": 0.0001767823502529795
+      "max_pos_nm": 10.000000000000568,
+      "centroid_nm": 5.877313292142183,
+      "width_nm": 13.859176668712077,
+      "imbalance_A_bin14": 0.29445160713955226,
+      "imbalance_B_bin20": 0.35502928493035446,
+      "imbalance_C_bin10": 0.23009115294972615,
+      "profile_L2_vs_finest": 0.000270254799914459
     },
     {
       "dx": 0.5,
       "norm": 1.0,
-      "max_pos_nm": 6.500000000000519,
-      "centroid_nm": 3.147569618738205,
-      "width_nm": 14.889185671245926,
-      "imbalance_A_bin14": 0.1540297443630499,
-      "imbalance_B_bin20": 0.1905375636810986,
-      "imbalance_C_bin10": 0.11764122647774229,
+      "max_pos_nm": 10.500000000000576,
+      "centroid_nm": 5.878780867893079,
+      "width_nm": 13.85789647281352,
+      "imbalance_A_bin14": 0.2946593406562202,
+      "imbalance_B_bin20": 0.3552373535454302,
+      "imbalance_C_bin10": 0.23027036454497563,
       "profile_L2_vs_finest": 0.0
     }
   ],
   "crosscheck_gridsum_vs_continuous": {
     "4.0": {
-      "imbalance_gridsum": 0.3135482280821068,
-      "imbalance_continuous": 0.1593196934663812
+      "imbalance_gridsum": 0.44515988668002926,
+      "imbalance_continuous": 0.29749958187880565
     },
     "2.0": {
-      "imbalance_gridsum": 0.23363080991858817,
-      "imbalance_continuous": 0.15348021558579275
+      "imbalance_gridsum": 0.37601452312965267,
+      "imbalance_continuous": 0.29358267643237174
     },
     "1.0": {
-      "imbalance_gridsum": 0.19460049381655706,
-      "imbalance_continuous": 0.15393076269979003
+      "imbalance_gridsum": 0.33633208771707146,
+      "imbalance_continuous": 0.2944516071395522
     },
     "0.5": {
-      "imbalance_gridsum": 0.17415716970917283,
-      "imbalance_continuous": 0.15402974436304984
+      "imbalance_gridsum": 0.31539748337390966,
+      "imbalance_continuous": 0.2946593406562201
     }
   },
   "conclusion": "profile geometry (max/centroid/width) and profile L2 converge with grid refinement; the two-bin imbalance converges once read as a continuous functional on the interpolated profile, and only shifts artificially when computed as a raw lattice sum. Non-convergence of the earlier imbalance therefore belongs to the readout (lattice box-sum at coarse dx), not to the quantum dynamics."

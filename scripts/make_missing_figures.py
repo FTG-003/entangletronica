@@ -13,6 +13,7 @@ p = 1.5, t_transit = 0.24 ps.
 """
 
 import os
+import sys
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
@@ -23,6 +24,7 @@ from matplotlib.patches import Ellipse, Rectangle, FancyArrow
 PDF_METADATA = {"CreationDate": None}
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, HERE)
 FIG = os.path.join(HERE, "figures")
 os.makedirs(FIG, exist_ok=True)
 
@@ -38,43 +40,57 @@ MEV = 1e-3 * E               # J
 # fig_poisson_mapping: gate voltage -> effective lens potential
 # ---------------------------------------------------------------------------
 def fig_poisson_mapping():
-    eps_r = 13.9
-    w, t, d = 20.0, 10.0, 20.0          # gate finger width/thickness/height above well [nm]
+    """Gate voltage -> effective screened lens potential (real Poisson--TF).
 
-    # Shallow-lens gate coupling (Sec. 2.2 of the paper): a gate swing
-    # dV_g = -0.3 V produces V0 = -15 meV at the 2DEG, i.e. dV0/dV_g = 50 meV/V.
-    # The coupling is linear in the shallow-lens regime |V_g| <= 0.3 V used in
-    # the quantum simulations; a real gate saturates beyond it (screening), so
-    # the paper quotes the shallow regime as the operating window.
-    COUPLING_MEV_PER_V = 50.0
-    Vg = np.linspace(-0.5, 0.0, 251)
-    V0_meV = COUPLING_MEV_PER_V * Vg    # lens depth [meV]
-    i_op = int(np.argmin(np.abs(Vg + 0.3)))   # operating point V_g = -0.3 V
+    All curves come from :class:`electrostatics.PoissonTFLens` (Sec. 2.2):
+    strip Laplace solution screened by the 2DEG via the Thomas--Fermi
+    dielectric function 1/(1 + q_TF/|q|), amplitude-calibrated to
+    50 meV/V.  The Gaussian widths sigma_x, sigma_y are fitted on the
+    central well of the actual screened profile (not assumed).
+    """
+    from entangletronica.electrostatics import PoissonTFLens
+    lens = PoissonTFLens()
+    rep = lens.mapping_report()
+    sx, sy = rep["sigma_x_nm"], rep["sigma_y_nm"]
+    slope, r2 = rep["slope_meV_per_V"], rep["r2_shallow"]
+    Vg_op = -0.3
 
-    # 1D lateral profiles (Gaussian parametrisation of Eq. 7) at the operating point
-    xs = np.linspace(-30, 30, 400)
-    sx, sy = 6.0, 8.0
-    prof = np.exp(-0.5 * (xs / sx) ** 2) * V0_meV[i_op]
-    prof2 = np.exp(-0.5 * (xs / sy) ** 2) * V0_meV[i_op]
+    # 1D cuts of the real screened profile at the operating point V_g = -0.3 V
+    xs = np.linspace(-40, 40, 401)
+    Xg, Yg = np.meshgrid(xs, [0.0], indexing="ij")
+    prof_x = lens.get_lens(Xg, Yg, Vg_op)[:, 0]
+    Xg2, Yg2 = np.meshgrid([0.0], xs, indexing="ij")
+    prof_y = lens.get_lens(Xg2, Yg2, Vg_op)[0, :]
+    prof_x /= np.abs(prof_x).max()
+    prof_y /= np.abs(prof_y).max()
 
     fig = plt.figure(figsize=(11, 3.6))
     ax = fig.add_subplot(131)
-    ax.plot(xs, prof, "C0", lw=1.6, label=r"along $x$ ($\sigma_x=6$ nm)")
-    ax.plot(xs, prof2, "C1", lw=1.6, label=r"along $y$ ($\sigma_y=8$ nm)")
+    ax.plot(xs, prof_x, "C0", lw=1.6,
+            label=rf"along $x$ ($\sigma_x={sx:.1f}$ nm, fit)")
+    ax.plot(xs, prof_y, "C1", lw=1.6,
+            label=rf"along $y$ ($\sigma_y={sy:.1f}$ nm, fit)")
+    ax.axvline(-sx, ls=":", color="C0", lw=0.8)
+    ax.axvline(sx, ls=":", color="C0", lw=0.8)
+    ax.axvline(-sy, ls=":", color="C1", lw=0.8)
+    ax.axvline(sy, ls=":", color="C1", lw=0.8)
     ax.set_xlabel("lateral position [nm]")
-    ax.set_ylabel(r"$V_{\mathrm{eff}}$ [meV]")
+    ax.set_ylabel(r"$V_{\mathrm{eff}}$ [norm.]")
     ax.set_title(r"(a) Screened lens profile at $V_g=-0.3$ V")
     ax.axhline(0, color="k", lw=0.6)
-    ax.legend(fontsize=8)
+    ax.legend(fontsize=7.5)
     ax.grid(alpha=0.3)
 
     ax = fig.add_subplot(132)
-    ax.plot(Vg, V0_meV, "o-", ms=3, color="C2", lw=1.2)
-    ax.axvline(-0.3, ls="--", color="0.5", lw=1.0)
-    ax.axvspan(-0.3, 0, color="C4", alpha=0.12)
-    ax.plot([-0.3], [V0_meV[i_op]], "ks", ms=6)
-    ax.annotate(r"$V_0=-15$ meV @ $V_g=-0.3$ V", xy=(-0.3, V0_meV[i_op]),
-                xytext=(-0.46, V0_meV[i_op] + 2.5), fontsize=9,
+    Vg = np.linspace(-0.5, 0.0, 251)
+    V0 = lens.lens_depth(Vg)
+    ax.plot(Vg, V0, "o-", ms=3, color="C2", lw=1.2)
+    ax.axvline(Vg_op, ls="--", color="0.5", lw=1.0)
+    ax.axvspan(Vg_op, 0, color="C4", alpha=0.12)
+    ax.plot([Vg_op], [lens.lens_depth(Vg_op)], "ks", ms=6)
+    ax.annotate(rf"$V_0={lens.lens_depth(Vg_op):.0f}$ meV @ $V_g={Vg_op:.1f}$ V",
+                xy=(Vg_op, lens.lens_depth(Vg_op)),
+                xytext=(-0.47, lens.lens_depth(Vg_op) + 2.5), fontsize=9,
                 arrowprops=dict(arrowstyle="->", lw=0.8))
     ax.set_xlabel(r"gate voltage $V_g$ [V]")
     ax.set_ylabel(r"lens depth $V_0$ [meV]")
@@ -82,20 +98,21 @@ def fig_poisson_mapping():
     ax.grid(alpha=0.3)
 
     ax = fig.add_subplot(133)
-    V0_shallow = V0_meV[Vg >= -0.3]
-    Vg_sh = Vg[Vg >= -0.3]
-    m, b = np.polyfit(Vg_sh, V0_shallow, 1)
-    ax.plot(Vg, V0_meV, "C2", lw=1.2, alpha=0.35)
-    ax.plot(Vg_sh, m * Vg_sh + b, "C3", lw=1.8, label="linear fit (shallow-lens regime)")
-    ax.axvspan(-0.3, 0, color="C4", alpha=0.12)
-    ax.text(-0.15, 2.5, "shallow regime\n$|V_0|\\ll E_F$", fontsize=8, ha="center", color="C4")
+    shallow = np.abs(Vg) <= 0.3
+    ax.plot(Vg, V0, "C2", lw=1.2, alpha=0.35)
+    ax.plot(Vg[shallow], V0[shallow], "C3", lw=1.8,
+            label=rf"linear fit: {slope:.0f} meV/V, $R^2={r2:.3f}$")
+    ax.axvspan(Vg_op, 0, color="C4", alpha=0.12)
+    ax.text(-0.15, 2.5, "shallow regime\n$|V_0|\\ll E_F$", fontsize=8,
+            ha="center", color="C4")
     ax.set_xlabel(r"gate voltage $V_g$ [V]")
     ax.set_ylabel(r"$V_0$ [meV]")
     ax.set_title("(c) Linearity of the mapping")
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3)
 
-    fig.suptitle("Poisson--Thomas--Fermi electrostatics: gate voltage to effective lens potential",
+    fig.suptitle("Poisson--Thomas--Fermi electrostatics: gate voltage to effective lens potential"
+                 rf"  ($q_{{\mathrm{{TF}}}}={rep['q_TF_nm-1']:.3f}$ nm$^{{-1}}$)",
                  fontsize=11)
     fig.tight_layout(rect=(0, 0, 1, 0.94))
     return fig
@@ -105,35 +122,56 @@ def fig_poisson_mapping():
 # fig_coherence: ensemble visibility vs temperature
 # ---------------------------------------------------------------------------
 def fig_coherence():
+    """Ensemble visibility vs temperature: REAL numerical results.
+
+    Loads results/coherence_ensemble.json (produced by
+    scripts/ensemble_coherence.py, Sec. 2.4): N_ens = 200 realisations of the
+    delta-correlated dephasing model per temperature, C_numerical = visibility
+    of the ensemble-mean detector profile, C_std = bootstrap 1-sigma band.
+    """
+    import json
+    path = os.path.join(HERE, "results", "coherence_ensemble.json")
+    if not os.path.exists(path):
+        raise FileNotFoundError(
+            f"{path} missing -- run scripts/ensemble_coherence.py first "
+            "(CI does this before make_missing_figures.py)")
+    d = json.load(open(path))
+    T_num = np.array(d["temperatures"])
+    C_num = np.array(d["C_numerical"])
+    C_std = np.array(d["C_std"])
+    C_ana = np.array(d["C_analytical"])
+    Tc = d.get("T_cross_half_K")
+
     tau0, T0, p = 12.0, 4.0, 1.5
     t_transit = 0.24
     C0 = 0.95
-    T = np.logspace(-1, 1.9, 400)
-
+    T = np.logspace(np.log10(4), np.log10(77), 400)
     tau = tau0 * (T0 / T) ** p
     C = C0 * np.exp(-t_transit / tau)
 
-    # Ensemble spread: 200 noise realisations, sigma grows with dephasing rate
-    rng = np.random.default_rng(42)
-    sigma = 0.02 + 0.10 * (1 - np.exp(-t_transit / tau))
-    Tf = np.concatenate([T, T[::-1]])
-    Cf = np.concatenate([C + sigma, (C - sigma)[::-1]])
-
     fig, ax = plt.subplots(figsize=(7.5, 4.4))
-    ax.fill_between(T, C - sigma, C + sigma, color="C0", alpha=0.22,
-                    label=r"$1\sigma$ band (200 noise realisations)")
-    ax.plot(T, C, "C0", lw=1.8, label=r"$\langle C(T)\rangle$ (fit, $p=1.5$)")
+    ax.plot(T, C, "C0", lw=1.8,
+            label=r"$C_{\mathrm{ana}}(T)=0.95\,e^{-t_{\rm tr}/\tau_\phi(T)}$")
+    ax.fill_between(T_num, C_num - C_std, C_num + C_std, color="C3", alpha=0.22,
+                    label=rf"$1\sigma$ band ($N_\mathrm{{ens}}={d['N_ens']}$)")
+    ax.errorbar(T_num, C_num, yerr=C_std, fmt="o", ms=5, capsize=3,
+                color="C3", ecolor="C3", elinewidth=1.3,
+                label="numerical ensemble")
     ax.axhline(0.5, ls="--", color="k", lw=0.9)
-    ax.axvline(10, ls=":", color="C3", lw=1.1)
-    ax.text(10.4, 0.86, r"$T_{\max}\approx10$ K", color="C3", fontsize=9)
-    ax.text(1.6, 0.53, "operating bound $C=0.5$", fontsize=8, color="0.3")
+    ax.text(6.2, 0.52, "operating bound $C=0.5$", fontsize=8, color="0.3")
+    if Tc is not None:
+        ax.axvline(Tc, ls=":", color="C3", lw=1.1)
+        ax.text(Tc * 1.18, 0.30, rf"$T_{{\rm max}}\approx{Tc:.0f}$ K",
+                color="C3", fontsize=9)
     ax.axvspan(77, 80, color="C4", alpha=0.10)
     ax.text(79.3, 0.12, "LN$_2$: washed out", fontsize=8, color="C4", ha="right")
     ax.set_xscale("log")
+    ax.set_xlim(4, 80)
     ax.set_xlabel(r"temperature $T$ [K]")
-    ax.set_ylabel(r"mean visibility $\langle C\rangle$")
-    ax.set_title(r"Coherence budget: $\mu=2\times10^6$ cm$^2$/Vs, $\tau_0=12$ ps at 4 K")
-    ax.set_ylim(-0.05, 1.02)
+    ax.set_ylabel(r"fringe visibility $C(T)$")
+    ax.set_title(r"Coherence budget: $\mu=2\times10^6$ cm$^2$/Vs, $\tau_0=12$ ps at 4 K"
+                 rf" (ensemble, $\mathrm{{scale_{{noise}}}}={d['scale_noise']:.0f}$)")
+    ax.set_ylim(-0.05, 1.05)
     ax.legend(fontsize=8, loc="lower left")
     ax.grid(alpha=0.3, which="both")
     fig.tight_layout()

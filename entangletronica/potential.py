@@ -15,6 +15,7 @@ Default material parameters (InGaAs 2DEG):
 """
 
 import numpy as np
+from .electrostatics import PoissonTFLens
 
 # ----------------------------------------------------------------------------- material
 MSTAR = 0.042
@@ -100,8 +101,45 @@ def beam_splitter(x, y, x0=60.0, y0=0.0, s=10.0, a=3.0, k=1.0):
 
 # ----------------------------------------------------------------------------- phase shifter
 def phase_shifter(x, y, x0=100.0, y0=0.0, s=12.0, a=3.0, k=1.0):
-    """Gaussian well (a<0) on the lower arm: electrostatic phase shifter."""
+    """Gaussian well (a<0) on the lower arm: electrostatic phase shifter.
+
+    Ad-hoc analytic gate, superseded by the Poisson--Thomas--Fermi lens
+    (:class:`electrostatics.PoissonTFLens`) in the Young landscape below;
+    retained for the Mach--Zehnder landscape and the archived sketches.
+    """
     return a * k * _g(x, x0, s) * _g(y, y0, s)
+
+
+# ----------------------------------------------------------------------------- Young landscape (main pipeline)
+# Physical lens of Sec. 2.2: gate finger (w=20, t=10, d=20 nm, eps_r=13.9)
+# screened by the 2DEG; amplitude calibrated to V0 = -15 meV at Vg = -0.3 V
+# (linear coupling 50 meV/V in the shallow-lens regime |Vg| <= 0.3 V).
+VG_PER_KPHI = -0.3    # [V] per unit phase_k (negative: attractive lens)
+_PHYS_LENS = PoissonTFLens()
+
+
+def young_landscape(x, y, Vg=0.0, phase_k=0.0, barrier_k=1.0, barrier_a=12.0,
+                    slit_y=12.0, barrier_x=60.0, lens_x=68.0, lens_y=12.0):
+    """Double-slit + Poisson--Thomas--Fermi phase lens (main pipeline).
+
+    Components (strengths in meV):
+      * entrance/exit caps: wall at x=0 and x=160 (a=+15)
+      * double-slit barrier: Gaussian sheet at x=barrier_x (a=+12*barrier_k)
+        with transparent apertures of width 4 nm at y=+-slit_y
+      * phase lens: screened gate finger (PoissonTFLens) at (lens_x, lens_y)
+        behind the upper slit, driven by Vg_eff = Vg + VG_PER_KPHI * phase_k
+
+    The lens depth factor ``phase_k`` is the legacy knob of the toy model;
+    the physical control parameter is the gate voltage Vg (1 unit of phase_k
+    <-> -0.3 V <-> -15 meV, Sec. 2.2 of the paper).  Returns meV.
+    """
+    V = np.zeros_like(x)
+    V += wall(x, y, xx=0.0, w=6.0, a=15.0)
+    V += barrier_k * barrier_a * gauss(x, barrier_x, 6.0) * \
+         (1.0 - gauss(y, -slit_y, 4.0)) * (1.0 - gauss(y, slit_y, 4.0))
+    V += _PHYS_LENS.get_lens(x - lens_x, y - lens_y, Vg + VG_PER_KPHI * phase_k)
+    V += wall(x, y, xx=160.0, w=6.0, a=15.0)
+    return V
 
 
 # ----------------------------------------------------------------------------- convenient landscape

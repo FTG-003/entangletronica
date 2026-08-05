@@ -59,6 +59,11 @@ def test_free_flight_moves_and_is_unitary():
     assert cx1 > cx0 + 0.5 * v_step * 60, f"electron frozen: {cx0} -> {cx1}"
 
 
+def _young_smoke(x, y, Vg=0.0, phase_k=0.0, barrier_k=1.0):
+    """Canonical Young landscape (physical Poisson--TF lens), Sec. 2.2."""
+    return P.young_landscape(x, y, Vg=Vg, phase_k=phase_k, barrier_k=barrier_k)
+
+
 def test_splitter_splits():
     """The double-slit barrier must split the wave into two coherent sources:
     significant transmitted probability past the barrier plane."""
@@ -66,16 +71,8 @@ def test_splitter_splits():
     xx, yy = np.meshgrid(X, Y, indexing="ij")
     psi0 = electron.gaussian_packet(xx, yy, k0=0.2, s=10.0)
 
-    def young(x, y, Vg=0.0, phase_k=0.0, barrier_k=1.0):
-        V = np.zeros_like(x)
-        V += P.wall(x, y, xx=0.0, w=6.0, a=15.0)
-        V += barrier_k * 12.0 * P.gauss(x, 60.0, 6.0) * \
-             (1.0 - P.gauss(y, -12.0, 4.0)) * (1.0 - P.gauss(y, 12.0, 4.0))
-        V += P.phase_shifter(x, y, x0=68.0, y0=12.0, s=6.0, a=-15.0, k=phase_k)
-        V += P.wall(x, y, xx=160.0, w=6.0, a=15.0)
-        return V
-
-    psi, hist, norm, Vmev = electron.run_landscape(young, X, Y, 0.3, 600, psi0=psi0)
+    psi, hist, norm, Vmev = electron.run_landscape(
+        _young_smoke, X, Y, 0.3, 600, psi0=psi0)
     p = np.abs(psi) ** 2
     ib = int(np.argmin(np.abs(X - 65.0)))   # just past the barrier
     tot = p[ib:, :].sum()
@@ -84,24 +81,16 @@ def test_splitter_splits():
 
 def test_phase_sweep_oscillates():
     """The gate must move the interference figure: imbalance grows with the
-    gate depth (linear transducer, measured R^2 = 0.99997 on the full grid)."""
+    gate depth (linear transducer, measured R^2 ~ 0.9997 for the physical
+    Poisson--TF lens on the full grid)."""
     X, Y = _grid()
     xx, yy = np.meshgrid(X, Y, indexing="ij")
     psi0 = electron.gaussian_packet(xx, yy, k0=0.2, s=10.0)
 
-    def young(x, y, Vg=0.0, phase_k=0.0, barrier_k=1.0):
-        V = np.zeros_like(x)
-        V += P.wall(x, y, xx=0.0, w=6.0, a=15.0)
-        V += barrier_k * 12.0 * P.gauss(x, 60.0, 6.0) * \
-             (1.0 - P.gauss(y, -12.0, 4.0)) * (1.0 - P.gauss(y, 12.0, 4.0))
-        V += P.phase_shifter(x, y, x0=68.0, y0=12.0, s=6.0, a=-15.0, k=phase_k)
-        V += P.wall(x, y, xx=160.0, w=6.0, a=15.0)
-        return V
-
     res = []
     for pk in [0.0, 0.5, 1.0, 1.5]:
         psi, hist, norm, Vmev = electron.run_landscape(
-            young, X, Y, 0.3, 400, psi0=psi0, phase_k=pk)
+            _young_smoke, X, Y, 0.3, 400, psi0=psi0, phase_k=pk)
         p = np.abs(psi) ** 2
         i = int(np.argmin(np.abs(X - 70.0)))
         prof = p[i, :]

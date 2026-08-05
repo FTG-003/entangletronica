@@ -25,13 +25,17 @@ except ImportError:
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 METRICS = os.path.join(ROOT, "results", "entangletron_metrics.json")
 
-# Headline values observed on 2025-08-02 from a full-grid (dx=2 nm) run.
-# Breaks here mean the physics pipeline changed in a way that must be
-# reviewed/annotated deliberately.
+# Headline values observed on 2025-08-05 from a full-grid (dx=2 nm) run with
+# the POISSON--THOMAS--FERMI physical lens (electrostatics.py) replacing the
+# former ad-hoc Gaussian phase_shifter in the Young landscape.  This was a
+# deliberate physics change: the screened-gate lens is ~2x wider (sigma_x~13 nm,
+# sigma_y~14.7 nm vs the old 6/8 nm), which nearly doubles the transfer slope and
+# raises the max imbalance.  Breaks here mean the physics pipeline changed in a
+# way that must be reviewed/annotated deliberately.
 HEADLINES = {
-    "transfer_slope_per_kphi": 0.14226495648813417,
-    "transfer_linear_r2": 0.9999713782967592,
-    "max_imbalance": 0.4388659152061049,
+    "transfer_slope_per_kphi": 0.2737390577220788,
+    "transfer_linear_r2": 0.9997410534849631,
+    "max_imbalance": 0.7586790549846252,
 }
 
 
@@ -57,7 +61,7 @@ def test_headline_numbers_pinned():
 def test_headline_values_are_sane_ranges():
     """Guard against obviously broken values (NaN, sign-flipped, wild drift)."""
     m = _load()
-    assert 0.05 < m["transfer_slope_per_kphi"] < 0.30
+    assert 0.05 < m["transfer_slope_per_kphi"] < 0.35
     assert 0.99 < m["transfer_linear_r2"] <= 1.0
     assert 0.0 < m["max_imbalance"] < 1.0
     assert m["norm_conservation_max_dev"] < 1e-6

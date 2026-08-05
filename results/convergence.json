@@ -4,57 +4,57 @@
       "dx": 4.0,
       "dt": 0.6,
       "Nt": 650,
-      "imbalance": 0.3135482280821067,
-      "fringe_peak_nm": 6.881101556022438,
-      "band_transmission": 0.03436921444081066,
-      "norm": 0.9999999999998922
+      "imbalance": 0.4451598866800292,
+      "fringe_peak_nm": 12.0,
+      "band_transmission": 0.040049069939134235,
+      "norm": 0.9999999999998876
     },
     {
       "dx": 2.0,
       "dt": 0.3,
       "Nt": 1300,
-      "imbalance": 0.2336308099185881,
-      "fringe_peak_nm": 6.663991528005512,
-      "band_transmission": 0.0177688800432022,
-      "norm": 1.0000000000000664
+      "imbalance": 0.37601452312965267,
+      "fringe_peak_nm": 10.31554626784478,
+      "band_transmission": 0.020844349296961138,
+      "norm": 1.000000000000068
     },
     {
       "dx": 1.0,
       "dt": 0.15,
       "Nt": 2600,
-      "imbalance": 0.1946004938165571,
-      "fringe_peak_nm": 6.746217683883889,
-      "band_transmission": 0.008638570088930082,
-      "norm": 0.9999999999995991
+      "imbalance": 0.3363320877170715,
+      "fringe_peak_nm": 10.308637360527314,
+      "band_transmission": 0.01011933556707141,
+      "norm": 0.999999999999675
     },
     {
       "dx": 0.5,
       "dt": 0.075,
       "Nt": 5200,
-      "imbalance": 0.17415716970917297,
-      "fringe_peak_nm": 6.743650210479007,
-      "band_transmission": 0.004256791680862228,
-      "norm": 0.9999999999996322
+      "imbalance": 0.3153974833739098,
+      "fringe_peak_nm": 10.30885680962389,
+      "band_transmission": 0.0049826969925899104,
+      "norm": 0.9999999999996877
     }
   ],
   "relative_change": [
     {
       "from_dx": 4.0,
       "to_dx": 2.0,
-      "imbalance": 0.2336308099185881,
-      "rel_change": 0.3420671194495578
+      "imbalance": 0.37601452312965267,
+      "rel_change": 0.18389014066495163
     },
     {
       "from_dx": 2.0,
       "to_dx": 1.0,
-      "imbalance": 0.1946004938165571,
-      "rel_change": 0.20056637748732256
+      "imbalance": 0.3363320877170715,
+      "rel_change": 0.11798587426473181
     },
     {
       "from_dx": 1.0,
       "to_dx": 0.5,
-      "imbalance": 0.17415716970917297,
-      "rel_change": 0.11738433819016857
+      "imbalance": 0.3153974833739098,
+      "rel_change": 0.06637530559602883
     }
   ],
   "imbalance_converged_under_1pct": false,

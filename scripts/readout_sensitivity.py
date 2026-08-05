@@ -63,12 +63,9 @@ def moments(y, p):
     }
 
 def young_landscape(xx, yy, phase_k=1.0, barrier_a=12.0):
-    V = np.zeros_like(xx)
-    V += P.wall(xx, yy, xx=0.0, w=6.0, a=15.0)
-    V += barrier_a * P.gauss(xx, BARRIER_X, 6.0) * \
-         (1.0 - P.gauss(yy, -SLIT_Y, 4.0)) * (1.0 - P.gauss(yy, SLIT_Y, 4.0))
-    V += P.phase_shifter(xx, yy, x0=68.0, y0=SLIT_Y, s=6.0, a=-15.0, k=phase_k)
-    V += P.wall(xx, yy, xx=160.0, w=6.0, a=15.0)
+    V = P.young_landscape(xx, yy, phase_k=phase_k, barrier_a=barrier_a,
+                          slit_y=SLIT_Y, barrier_x=BARRIER_X,
+                          lens_x=68.0, lens_y=SLIT_Y)
     return V
 
 def main():

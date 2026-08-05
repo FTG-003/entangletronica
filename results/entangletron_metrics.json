@@ -2,13 +2,13 @@
   "energy_meV": 36.320549524554444,
   "deBroglie_nm": 31.41592653589793,
   "fringe_period_est_nm": 65.44984694978736,
-  "transfer_slope_per_kphi": 0.14226495648813417,
-  "transfer_slope_per_v": -0.4742165216271139,
-  "transfer_sensitivity_sv_shallow_per_v": -0.4804372849828603,
-  "transfer_linear_r2": 0.9999713782967592,
-  "max_imbalance": 0.4388659152061049,
+  "transfer_slope_per_kphi": 0.2737390577220788,
+  "transfer_slope_per_v": -0.9124635257402627,
+  "transfer_sensitivity_sv_shallow_per_v": -0.9177356021810283,
+  "transfer_linear_r2": 0.9997410534849631,
+  "max_imbalance": 0.7586790549846252,
   "max_imbalance_at_vg_v": -0.75,
-  "max_bin_visibility": 0.4388659151744817,
+  "max_bin_visibility": 0.7586790549358784,
   "norm_conservation_max_dev": 1.3233858453531866e-13,
   "detector_plane_x_nm": 110.0,
   "vg_mapping_v_per_kphi": -0.3,
@@ -19,22 +19,22 @@
       {
         "dx_nm": 4.0,
         "dt": 0.6,
-        "imbalance": 0.3135482280821067
+        "imbalance": 0.4451598866800292
       },
       {
         "dx_nm": 2.0,
         "dt": 0.3,
-        "imbalance": 0.2336308099185881
+        "imbalance": 0.37601452312965267
       },
       {
         "dx_nm": 1.0,
         "dt": 0.15,
-        "imbalance": 0.1946004938165571
+        "imbalance": 0.3363320877170715
       },
       {
         "dx_nm": 0.5,
         "dt": 0.075,
-        "imbalance": 0.17415716970917297
+        "imbalance": 0.3153974833739098
       }
     ]
   },
@@ -42,30 +42,30 @@
   "convergence_imbalance_continuous": {
     "readout_functional": "continuous_interpolated",
     "source": "results/readout_sensitivity.json",
-    "readout_note": "continuous functional of the interpolated profile on a 0.1 nm axis (readout_sensitivity.py); stable ~0.154 from dx=2 nm.",
+    "readout_note": "continuous functional of the interpolated profile on a 0.1 nm axis (readout_sensitivity.py); stable ~0.295 from dx=2 nm.",
     "values": [
       {
         "dx_nm": 0.5,
-        "imbalance": 0.15402974436304984,
-        "gridsum_legacy": 0.17415716970917283,
+        "imbalance": 0.2946593406562201,
+        "gridsum_legacy": 0.31539748337390966,
         "dt": 0.075
       },
       {
         "dx_nm": 1.0,
-        "imbalance": 0.15393076269979003,
-        "gridsum_legacy": 0.19460049381655706,
+        "imbalance": 0.2944516071395522,
+        "gridsum_legacy": 0.33633208771707146,
         "dt": 0.15
       },
       {
         "dx_nm": 2.0,
-        "imbalance": 0.15348021558579275,
-        "gridsum_legacy": 0.23363080991858817,
+        "imbalance": 0.29358267643237174,
+        "gridsum_legacy": 0.37601452312965267,
         "dt": 0.3
       },
       {
         "dx_nm": 4.0,
-        "imbalance": 0.1593196934663812,
-        "gridsum_legacy": 0.3135482280821068,
+        "imbalance": 0.29749958187880565,
+        "gridsum_legacy": 0.44515988668002926,
         "dt": 0.6
       }
     ]

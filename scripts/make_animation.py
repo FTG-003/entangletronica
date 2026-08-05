@@ -31,13 +31,9 @@ psi0 = electron.gaussian_packet(xx, yy, k0=K0, s=S)
 
 
 def young(x, y, Vg=0.0, phase_k=0.0, barrier_k=1.0):
-    V = np.zeros_like(x)
-    V += P.wall(x, y, xx=0.0, w=6.0, a=15.0)
-    V += barrier_k * 12.0 * P.gauss(x, 60.0, 6.0) * \
-         (1.0 - P.gauss(y, -12.0, 4.0)) * (1.0 - P.gauss(y, 12.0, 4.0))
-    V += P.phase_shifter(x, y, x0=68.0, y0=12.0, s=6.0, a=-15.0, k=phase_k)
-    V += P.wall(x, y, xx=160.0, w=6.0, a=15.0)
-    return V
+    return P.young_landscape(x, y, Vg=Vg, phase_k=phase_k, barrier_k=barrier_k,
+                             slit_y=12.0, barrier_x=60.0,
+                             lens_x=68.0, lens_y=12.0)
 
 
 def main():

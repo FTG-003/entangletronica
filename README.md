@@ -42,7 +42,7 @@ epistemic weight, and it matters that they are not conflated.
 
 | Number value | What it actually is | Epistemic weight |
 |---|---|---|
-| **R² = 0.99997** (fit to transfer curve) | Self-consistency of a deterministic solver in a linear regime | **Low** — a well-engineered PDE solver *must* give a nearly-linear curve here. Quasi-tautological; sanity check, not discovery. |
+| **R² = 0.9997** (fit to transfer curve) | Self-consistency of a deterministic solver in a linear regime | **Low** — a well-engineered PDE solver *must* give a nearly-linear curve here. Quasi-tautological; sanity check, not discovery. |
 | **Norm conserved to 1e-13** | Round-off-level unitarity of the split-step scheme | **Solver correctness** (numerics), not a device result. |
 
 These belong to the **numerical engine**, and are reported because they
@@ -78,8 +78,9 @@ ballistic 2DEG:
    is launched into the channel;
 2. a gate-defined double-slit barrier (`x = 60 nm`, apertures at
    `y = ±12 nm`) splits the wave into two coherent sources;
-3. a **programmable electrostatic gate** (`a = −15 meV`, behind the upper
-   aperture) shifts the *relative phase* between the paths **in flight**;
+3. a **programmable electrostatic gate** (Poisson–Thomas–Fermi screened
+   lens, `V₀ = −15 meV` at `Vg = −0.3 V`, behind the upper aperture) shifts
+   the *relative phase* between the paths **in flight**;
 4. the displaced interference figure is read by a two-bin detector at
    `x = 110 nm`.
 
@@ -108,22 +109,22 @@ These test that the *calculator is correct*, not that a device is special.
 A **grid-refinement study** (`scripts/convergence_study.py`) reduces the grid
 `Δx = {4, 2, 1, 0.5} nm` (with `Δt` scaled to keep the physical propagation
 time constant) at a fixed gate setting. The norm is exact to round-off at
-every resolution, the fringe peak settles to ≈ +6.7 nm (stable to <0.1 nm),
+every resolution, the fringe peak settles to ≈ +10.3 nm (stable to <0.01 nm),
 and the *profile* L2 error decays near second order. A summary of the
 observables:
 
-* fringe peak — converged (≈ +6.7 nm, stable <0.1 nm);
-* centroid & width — converged (≈ +3.15 nm, ≈ 14.9 nm);
-* profile L2 vs finest — 0.007 → 0.002 → 0.0002 (near 2nd order);
+* fringe peak — converged (≈ +10.3 nm, stable <0.01 nm);
+* centroid & width — converged (≈ +5.87 nm, ≈ 13.86 nm);
+* profile L2 vs finest — 0.0044 → 0.0016 → 0.00027 (near 2nd order);
 * two-bin imbalance read as a *continuous* functional of the profile — stable
-  at ≈ +0.154 from `Δx = 2` nm already.
+  at ≈ +0.295 from `Δx = 2` nm already.
 
 **Why an earlier imbalance looked unconverged.** `scripts/readout_sensitivity.py`
 re-propagated exactly the same state and read the same profile two ways. A raw
-lattice **box-sum** (the old observable) drifts `+0.314 → +0.234 → +0.195 →
-+0.174` as the grid coarsens, because a coarse grid samples a fixed-width box
+lattice **box-sum** (the old observable) drifts `+0.445 → +0.376 → +0.336 →
++0.315` as the grid coarsens, because a coarse grid samples a fixed-width box
 from too few lines; the **continuous functional** on the same state is stable
-at `≈ +0.154` from `Δx = 2` down. The discrepancy closes exactly as the grid
+at `≈ +0.295` from `Δx = 2` down. The discrepancy closes exactly as the grid
 refines (`+0.15 → +0.08 → +0.04 → +0.02`).
 
 **Conclusion:** the non-convergence was an artefact of the *lattice readout*,
@@ -139,9 +140,11 @@ produced by `readout_sensitivity.py`, figure `fig6_readout_profile.pdf`.
 
 | Observable | Value | Interpretation |
 |---|---|---|
-| Detector imbalance (max) | **0.44** | Interference redistributes probability between bins → a working readout |
-| Rough linearity of the transfer curve | R² ≈ 0.99997 | Regime statement, not a property of the device — see note below |
-| Fringe contrast | ≥ 0.9 across scan | Clear, resolvable fringes |
+| Detector imbalance (max) | **0.76** (at Vg = −0.75 V) | Interference redistributes probability between bins → a working readout |
+| Transfer sensitivity | **S_V ≈ −0.91 V⁻¹** (shallow window) | Phase–voltage transduction, consistent with the 50 meV/V electrostatics |
+| Rough linearity of the transfer curve | R² ≈ 0.9997 | Regime statement, not a property of the device — see note below |
+| Full-line fringe contrast (coherent limit) | ≈ 1.0 | Profile tails vanish; dephasing fills them → C(T) is the coherence observable |
+| Lens widths (Poisson–TF) | σx ≈ 13 nm, σy ≈ 15 nm | Emerge from screening (q_TF = 0.11 nm⁻¹), not assumed |
 | Input parameters | k₀ = 0.20 nm⁻¹, E = 36.3 meV, λ = 31.4 nm | Plausible *within* an InGaAs 2DEG window, chosen for a clean plot — see [caveats](#limitations--caveats) |
 
 The device operates as a **linear-ish transduction**: a gate parameter in, an
@@ -149,16 +152,42 @@ interference-related output, over a physically sensible operating range.
 This is the *expected* behaviour of double-slit interference, reproduced
 cleanly — not a discovery.
 
-> **Why the transfer looks so linear (measured, not assumed).** Over the full
-> scan (`phase_k ∈ [0, 2.5]`) the −15 meV gate moves the interference figure by
-> only **≈ 0.10 of a fringe period** — a phase of ≈ 0.25 rad per gate unit
-> (dwell-time integral `∫V dt/ħ` at group velocity ≈ 5.5 × 10⁵ m/s). The two-bin
-> detector therefore samples a narrow, near-linear **shoulder of a single lobe**;
-> the scan never crosses a fringe maximum or minimum. That — not a special
-> property of the device — is why R² ≈ 0.99997. A scan spanning several fringe
-> periods would expose the underlying sinusoidal response and the linear fit
-> would degrade. The R² is a *regime* statement about where the scan sits, not a
-> discovery.
+> **Why the transfer looks so linear (measured, not assumed).** Each gate unit
+> (`phase_k`, 1 ↔ Vg = −0.3 V) applies ≈ 0.25 rad of phase (dwell-time integral
+> `∫V dt/ħ` at group velocity ≈ 5.5 × 10⁵ m/s). The two-bin detector therefore
+> samples a narrow, near-linear **shoulder of a single lobe**; the scan never
+> crosses a fringe maximum or minimum. That — not a special property of the
+> device — is why R² ≈ 0.9997 over the shallow window (|Vg| ≤ 0.3 V). The
+> deeper-lens tail is an extrapolation of the phase model beyond the
+> linear-screening window. The R² is a *regime* statement about where the scan
+> sits, not a discovery.
+
+---
+
+## 3b. Coherence budget (stochastic ensemble)
+
+`scripts/ensemble_coherence.py` runs **200 noise realisations** at five
+temperatures (4, 10, 20, 50, 77 K) with a delta-correlated dephasing potential
+(`entangletronica/stochastic.py`, cell variance `s²/(2 τφ dx dy dt)`), using the
+power-law dephasing time τφ(T) = 12 ps·(4/T)^1.5. Results
+(`results/coherence_ensemble.json`):
+
+| T (K) | ⟨C⟩ analytical | ⟨C⟩ numerical |
+|---|---|---|
+| 4 | 0.931 | 0.926 |
+| 10 | 0.878 | 0.549 |
+| 20 | 0.760 | 0.200 |
+| 50 | 0.393 | 0.198 |
+| 77 | 0.175 | 0.188 |
+
+The noise amplitude is **empirically calibrated** (s = 22; the raw spec value
+2.32 produces no visible dephasing) so that ⟨C⟩(4 K) matches the analytical
+anchor. The numerical visibility crosses 0.5 at **T_max ≈ 11 K** — a
+conservative operating bound. Above ≈ 20 K the delta-correlated white-noise
+model enters its strong-scattering limit and ⟨C⟩ saturates at ≈ 0.19 (a
+non-perturbative artefact, not a physical revival); the analytical exponential
+is the ideal-device upper envelope. See the paper's methodological note and
+`scripts/_calibrate_scale.py`.
 
 ---
 
@@ -171,13 +200,14 @@ physics part, same output across runs):
 ```bash
 pip install -r requirements.txt
 python scripts/make_figures.py           # fig1–5 + metrics (figures/*, results/entangletron_metrics.json)
+python scripts/ensemble_coherence.py     # 200×5 stochastic ensemble (~3–4 min, 4-core parallel)
 python scripts/make_missing_figures.py   # fig_poisson_mapping, fig_coherence, fig_xor_schematic (paper §2–4)
 python scripts/make_animation.py         # assets/iframe_flight.gif
-python -m pytest tests/ -q               # full suite (smoke + regression pins)
+python -m pytest tests/ -q               # full suite (smoke + regression pins + physics tests)
 ```
 
 Outputs: `figures/*.{pdf,png}`, `results/entangletron_metrics.json`,
-`results/*.npy`, `assets/iframe_flight.gif`.
+`results/coherence_ensemble.json`, `results/*.npy`, `assets/iframe_flight.gif`.
 
 To use `entangletronica` as an importable library (outside the repo scripts),
 `pip install -e .` also works; the paper (optional) is built with
@@ -229,9 +259,11 @@ no new physics, and is intended as a compact, well-tested numerical model.
 - **Single-particle, single-slit-splitting physical content:** the result is
   single-electron interference; entanglement (multi-particle) is explicitly out
   of scope, and the name "Entangletronica" does not imply its content.
-- **No disorder, temperature, dephasing, SO coupling**; it is a bare ballistic
-  transport model. Real devices would add these channels and reduce the clean
-  interference.
+- **Dephasing modelled as delta-correlated white noise** (paper Sec. 2.4): an
+explicit, calibrated model of thermal dephasing, not a microscopic disorder
+calculation. No SO coupling or magnetic field. Real devices would add further
+channels (e.g. charge noise with finite correlation time) and can only reduce
+the clean interference.
 - **Numbers labelled "results" are solver self-consistency**, not observed
   phenomena; they justify the calculator's trust, not a scientific claim.
 
@@ -259,7 +291,9 @@ the archived version of record:
   from `readout_sensitivity.json`). Regenerate with `python scripts/make_figures.py`.
 - **Regression guards**: `tests/test_metrics_regression.py` pins the headline
   exports (`transfer_slope_per_kphi`, `transfer_linear_r2`, `max_imbalance`) to
-  1e-6 and checks the self-labelling contract.
+  1e-6 and checks the self-labelling contract; `tests/test_physics.py` guards
+  the Poisson–TF mapping (50 meV/V), the stochastic dephasing variance, and the
+  coherence ensemble (monotonic C(T), C(4 K) = 0.93 ± 0.05).
 - **CI**: `.github/workflows/ci.yml` installs from the lock, rebuilds all
   figures/metrics from the raw simulation, then runs the full test suite.
 - **Transit-time note**: the paper Discussion distinguishes the simulated
@@ -279,6 +313,8 @@ the archived version of record:
 ├── scripts/
 │   ├── entangletron_experiment.py  # Full experiment + figure pipeline
 │   ├── make_figures.py             # Figure entry point (single source of truth)
+│   ├── ensemble_coherence.py       # 200×5 stochastic dephasing ensemble (JSON + fig)
+│   ├── _calibrate_scale.py         # Empirical scale_noise calibration (dev artifact)
 │   ├── make_missing_figures.py     # Poisson-mapping / coherence / XOR figures
 │   ├── convergence_study.py        # Grid-refinement study
 │   ├── readout_sensitivity.py      # Readout-functional analysis
@@ -304,7 +340,7 @@ the archived version of record:
   - **DeepSeek**: Code execution, Schrödinger solver implementation, and LaTeX drafting.
   - **Kimi AI**: Adversarial peer review, edge-case audit, and physical validation.
   - **Pi Agent**: Automated repository maintenance, compilation, and version control.
-- **Human Oversight**: Directed by Fabrizio Terzi (Pyragogy.org). The human lead audited the numerical data, corrected the $77\text{ K}$ dephasing budget contradiction via analytical evaluation of Eq. 12, and aligned the manuscript.
+- **Human Oversight**: Directed by Fabrizio Terzi (Pyragogy.org). The human lead audited the numerical data, caught the dephasing-budget contradiction, recalculated the analytical visibility curve, and required an explicit 200-realisation ensemble plus empirical noise calibration before Table 1 was trusted.
 - **Repository**: Publicly tracked on GitHub for open review and replication.
 
 ---

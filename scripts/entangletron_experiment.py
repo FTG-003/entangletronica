@@ -50,14 +50,12 @@ VG_PER_KPHI = -0.3    # [V] per unit phase_k (negative: attractive lens)
 
 
 def young_landscape(x, y, Vg=0.0, phase_k=0.0, barrier_k=1.0, barrier_a=12.0):
-    """Double slit at y=+-SLIT_Y + electrostatic phase gate on the upper slit."""
-    V = np.zeros_like(x)
-    V += P.wall(x, y, xx=0.0, w=6.0, a=15.0)
-    V += barrier_k * barrier_a * P.gauss(x, BARRIER_X, 6.0) * \
-         (1.0 - P.gauss(y, -SLIT_Y, SLIT_S)) * (1.0 - P.gauss(y, SLIT_Y, SLIT_S))
-    V += P.phase_shifter(x, y, x0=PHASE_X, y0=SLIT_Y, s=6.0, a=-15.0, k=phase_k)
-    V += P.wall(x, y, xx=160.0, w=6.0, a=15.0)
-    return V
+    """Double slit at y=+-SLIT_Y + Poisson--Thomas--Fermi phase gate on the
+    upper slit (canonical definition in potential.py, Sec. 2.2 of the paper)."""
+    return P.young_landscape(x, y, Vg=Vg, phase_k=phase_k,
+                             barrier_k=barrier_k, barrier_a=barrier_a,
+                             slit_y=SLIT_Y, barrier_x=BARRIER_X,
+                             lens_x=PHASE_X, lens_y=SLIT_Y)
 
 
 def run(phase_k=0.0, barrier_a=12.0):
@@ -336,7 +334,7 @@ def main():
             "source": "results/readout_sensitivity.json",
             "readout_note": (
                 "continuous functional of the interpolated profile on a 0.1 nm "
-                "axis (readout_sensitivity.py); stable ~0.154 from dx=2 nm."
+                "axis (readout_sensitivity.py); stable ~0.295 from dx=2 nm."
             ),
             "values": cont,
         }
