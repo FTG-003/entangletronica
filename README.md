@@ -1,6 +1,6 @@
 <div align="center">
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21786336.svg)](https://doi.org/10.5281/zenodo.21786336)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21802416.svg)](https://doi.org/10.5281/zenodo.21802416)
 # Flying-Electron Interference Logic via Electrostatic Quantum Lenses
 
 ### Entangletronica
@@ -245,8 +245,8 @@ This study is released on Zenodo and identified by the DOI below; please cite
 the archived version of record:
 
 > **Fabrizio Terzi**, *Flying-Electron Interference Logic via Electrostatic
-> Quantum Lenses (Entangletronica)*, Zenodo, DOI: 10.5281/zenodo.21786336 (2026).
-> https://zenodo.org/records/21786336
+> Quantum Lenses (Entangletronica)*, Zenodo, DOI: 10.5281/zenodo.21802416 (2026).
+> https://zenodo.org/records/21802416
 
 ## Reproducibility & validation (2025-08-02)
 
