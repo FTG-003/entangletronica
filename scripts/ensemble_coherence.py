@@ -77,13 +77,25 @@ def analytical_contrast(T):
 
 
 # ------------------------------------------------------------------ ensemble
+def _job_seed(tidx, r, scale, xi):
+    """Deterministic per-realisation seed (independent across scale / xi runs).
+
+    For the operating point (scale=22, xi=0) this reduces exactly to the
+    original formula ``SEED + tidx * 1_000_000 + r``, so the committed
+    results/coherence_ensemble.json reproduces byte-for-byte.
+    """
+    off = ((int(round(scale * 10.0)) - 220) * 100_003
+           + int(round(xi * 10.0)) * 50_017)
+    return SEED + tidx * 1_000_000 + r + off
+
+
 def _job(args):
-    """One stochastic realisation: (T_idx, realization_idx) -> (profile, imb)."""
-    tidx, r = args
-    rng = np.random.default_rng(SEED + tidx * 1_000_000 + r)
-    psi, norm = stochastic.solve2d_stochastic(
+    """One stochastic realisation: (T_idx, realisation_idx, scale, xi)."""
+    tidx, r, scale, xi = args
+    rng = np.random.default_rng(_job_seed(tidx, r, scale, xi))
+    psi, _ = stochastic.solve2d_stochastic(
         V, psi0, DT, NT, X, Y, tau_phi_nat[tidx], rng,
-        scale_noise=SCALE_NOISE)
+        scale_noise=scale, noise_xi=xi)
     p = np.abs(psi) ** 2
     prof = p[IDET, :]
     prof = prof / prof.sum()
@@ -91,20 +103,45 @@ def _job(args):
     return prof, imb
 
 
-def run_ensemble(nproc=4):
+def run_ensemble(temperatures=None, n_ens=N_ENS, scale=SCALE_NOISE, xi=0.0,
+                 nproc=4):
+    """Ensemble of stochastic realisations; returns ``{T: (profs, imbs)}``.
+
+    Deterministic for a fixed (n_ens, scale, xi): each realisation uses its own
+    seeded Generator, so the result is identical under any process scheduling.
+    """
     from multiprocessing import Pool
+    if temperatures is None:
+        temperatures = list(TEMPERATURES_K)
+    tidx_of = {T: i for i, T in enumerate(TEMPERATURES_K)}
     t0 = time.time()
-    tasks = [(t, r) for t in range(len(TEMPERATURES_K)) for r in range(N_ENS)]
+    tasks = [(tidx_of[T], r, scale, xi)
+             for T in temperatures for r in range(n_ens)]
     with Pool(nproc) as pool:
         results = pool.map(_job, tasks)
     per_T = {}
-    for t in range(len(TEMPERATURES_K)):
-        profs = np.array([results[t * N_ENS + r][0] for r in range(N_ENS)])
-        imbs = np.array([results[t * N_ENS + r][1] for r in range(N_ENS)])
-        per_T[t] = (profs, imbs)
-    print(f"ensemble {len(TEMPERATURES_K) * N_ENS} solves in "
+    for k, T in enumerate(temperatures):
+        chunk = results[k * n_ens:(k + 1) * n_ens]
+        per_T[T] = (np.array([c[0] for c in chunk]),
+                    np.array([c[1] for c in chunk]))
+    print(f"ensemble {len(temperatures) * n_ens} solves in "
           f"{time.time() - t0:.0f} s", flush=True)
     return per_T
+
+
+def contrast_from_profiles(profs):
+    """C = (max-min)/(max+min) of the ensemble-mean detector profile."""
+    return float(profile_contrast(profs.mean(axis=0)))
+
+
+def Tmax_from_curve(T_list, C_list, half=C_HALF):
+    """Linear interpolation of the first C = half crossing of C(T)."""
+    for k in range(len(T_list) - 1):
+        if (C_list[k] - half) * (C_list[k + 1] - half) < 0:
+            t1, t2 = T_list[k], T_list[k + 1]
+            c1, c2 = C_list[k], C_list[k + 1]
+            return float(t1 + (half - c1) * (t2 - t1) / (c2 - c1))
+    return None
 
 
 def bootstrap_c(profs, n=N_BOOT, rng_seed=7):
@@ -118,18 +155,14 @@ def bootstrap_c(profs, n=N_BOOT, rng_seed=7):
     return float(Cs.std())
 
 
-def main():
-    os.makedirs(os.path.join(HERE, "results"), exist_ok=True)
-    os.makedirs(os.path.join(HERE, "figures"), exist_ok=True)
-    per_T = run_ensemble()
-
-    C_num, C_std = [], []
-    imb_mean, imb_std, imb_profile = [], [], []
-    profiles_mean = []
-    for t in range(len(TEMPERATURES_K)):
-        profs, imbs = per_T[t]
+def summarize(per_T, T_list=None):
+    """Contrasts / imbalances / analytical curve for a per-T ensemble dict."""
+    if T_list is None:
+        T_list = list(per_T)
+    C_num, C_std, imb_mean, imb_std, imb_profile = [], [], [], [], []
+    for T in T_list:
+        profs, imbs = per_T[T]
         mean_prof = profs.mean(axis=0)
-        profiles_mean.append(mean_prof)
         C_num.append(float(profile_contrast(mean_prof)))
         C_std.append(bootstrap_c(profs))
         imb_mean.append(float(imbs.mean()))
@@ -137,17 +170,18 @@ def main():
         pu = mean_prof[(Y >= 0) & (Y < 14.0)].sum()
         pl = mean_prof[(Y > -14.0) & (Y < 0)].sum()
         imb_profile.append(float((pu - pl) / (pu + pl)))
+    C_ana = [analytical_contrast(T) for T in T_list]
+    return C_num, C_std, imb_mean, imb_std, imb_profile, C_ana
 
-    C_ana = [analytical_contrast(T) for T in TEMPERATURES_K]
 
-    # temperature where the numerical visibility crosses C = 0.5
-    Tc = np.nan
-    for k in range(len(TEMPERATURES_K) - 1):
-        if (C_num[k] - C_HALF) * (C_num[k + 1] - C_HALF) < 0:
-            t1, t2 = TEMPERATURES_K[k], TEMPERATURES_K[k + 1]
-            c1, c2 = C_num[k], C_num[k + 1]
-            Tc = t1 + (C_HALF - c1) * (t2 - t1) / (c2 - c1)
-            break
+def main():
+    os.makedirs(os.path.join(HERE, "results"), exist_ok=True)
+    os.makedirs(os.path.join(HERE, "figures"), exist_ok=True)
+    per_T = run_ensemble()
+
+    C_num, C_std, imb_mean, imb_std, imb_profile, C_ana = summarize(per_T)
+    profiles_mean = [per_T[T][0].mean(axis=0) for T in TEMPERATURES_K]
+    Tc = Tmax_from_curve(TEMPERATURES_K, C_num)
 
     out = {
         "temperatures": TEMPERATURES_K,

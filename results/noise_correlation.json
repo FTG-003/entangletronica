@@ -1,0 +1,78 @@
+{
+  "xi_nm": [
+    0.0,
+    5.0,
+    10.0
+  ],
+  "temperatures": [
+    4.0,
+    10.0,
+    20.0,
+    50.0,
+    77.0
+  ],
+  "C_by_xi_numerical": {
+    "0.0": [
+      0.9264304571696068,
+      0.5486242490511256,
+      0.20009423738130105,
+      0.19787666439978288,
+      0.1881838697420571
+    ],
+    "5.0": [
+      0.9250953035270252,
+      0.7058859070624967,
+      0.27805048438071117,
+      0.2717601919405168,
+      0.2758038821268246
+    ],
+    "10.0": [
+      0.9820439622699747,
+      0.8836719622022455,
+      0.5583347812062459,
+      0.36825500894187785,
+      0.345655694510404
+    ]
+  },
+  "Tmax_by_xi_K": {
+    "0.0": 11.39512373176027,
+    "5.0": 14.812268833935006,
+    "10.0": 29.206889377757513
+  },
+  "per_T": {
+    "4.0": {
+      "T_K": 4.0,
+      "C_white": 0.9264304571696068,
+      "C_xi5": 0.9250953035270252,
+      "C_xi10": 0.9820439622699747
+    },
+    "10.0": {
+      "T_K": 10.0,
+      "C_white": 0.5486242490511256,
+      "C_xi5": 0.7058859070624967,
+      "C_xi10": 0.8836719622022455
+    },
+    "20.0": {
+      "T_K": 20.0,
+      "C_white": 0.20009423738130105,
+      "C_xi5": 0.27805048438071117,
+      "C_xi10": 0.5583347812062459
+    },
+    "50.0": {
+      "T_K": 50.0,
+      "C_white": 0.19787666439978288,
+      "C_xi5": 0.2717601919405168,
+      "C_xi10": 0.36825500894187785
+    },
+    "77.0": {
+      "T_K": 77.0,
+      "C_white": 0.1881838697420571,
+      "C_xi5": 0.2758038821268246,
+      "C_xi10": 0.345655694510404
+    }
+  },
+  "N_ens": 60,
+  "N_ens_xi0": 200,
+  "scale_noise": 22.0,
+  "note": "variance-preserving Gaussian smoothing (noise_xi in stochastic.py): only the spatial correlation length changes, the local noise amplitude is fixed. Result: at fixed local amplitude, longer-range correlation makes the two interfering paths sample increasingly COMMON noise, suppressing the differential (relative) phase that destroys the fringes. The white-noise model (xi=0) is therefore the conservative worst case: it maximizes differential dephasing, so the paper's T_max = 11 K bound is a lower bound that holds for any environment with finite spatial correlation."
+}

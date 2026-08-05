@@ -8,7 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
 
@@ -31,6 +31,20 @@ jobs:
 
       - name: Rebuild stochastic dephasing ensemble (JSON before EQLI figures/tests)
         run: python scripts/ensemble_coherence.py
+
+      # Referee due-diligence checks (paper Sec. 2.4/robustness): each
+      # re-generates its committed results/*.json with fixed seeds.
+      - name: Rebuild ensemble-size convergence check
+        run: python scripts/ensemble_convergence.py
+
+      - name: Rebuild noise-scale sensitivity check
+        run: python scripts/scale_sensitivity.py
+
+      - name: Rebuild spatially correlated noise check
+        run: python scripts/noise_correlation.py
+
+      - name: Rebuild robustness multi-panel figure
+        run: python scripts/make_robustness_figure.py
 
       - name: Rebuild EQLI paper figures (Poisson mapping, coherence, XOR)
         run: python scripts/make_missing_figures.py

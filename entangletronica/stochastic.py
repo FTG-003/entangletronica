@@ -22,6 +22,15 @@ low-temperature analytical visibility.
 
 Each split-step is exactly unitary (real potentials), so the norm is
 conserved to round-off even in the noisy case.
+
+Spatially correlated noise (``noise_xi > 0``)
+---------------------------------------------
+The default model is white *both* in space and time (a single noise draw per
+cell per step).  Setting ``noise_xi`` > 0 smooths each time slice's field with a
+Gaussian kernel of width ``noise_xi`` (nm), **renormalised so that the per-cell
+variance is unchanged**: only the *spatial correlation* is varied, isolating
+its effect from the noise amplitude (used as a robustness check of the
+white-noise approximation, paper Sec. 2.4).
 """
 
 import numpy as np
@@ -38,8 +47,41 @@ def dephasing_noise(shape, tau_phi, dx, dy, dt, rng, scale_noise=1.0):
     return sigma * rng.standard_normal(shape)
 
 
+def spatial_kernel(xi, shape, dx=1.0):
+    """Variance-preserving Gaussian smoothing of a noise field.
+
+    Returns ``(fftK, norm)`` so that convolving a white field and rescaling
+the result by ``norm`` leaves the per-cell variance unchanged | the only
+thing that changes is the spatial correlation (1/e width ``xi`` nm).
+Returns ``None`` when ``xi`` is ``None`` or <= 0 (pure white noise).
+    """
+    if xi is None or xi <= 0:
+        return None
+    s = float(xi) / float(dx) if dx else float(xi)
+    Nx, Ny = shape
+
+    def _dist(n):
+        r = np.arange(n)
+        return np.minimum(r, n - r)
+
+    kx = np.exp(-0.5 * (_dist(Nx) / s) ** 2)
+    ky = np.exp(-0.5 * (_dist(Ny) / s) ** 2)
+    K = np.outer(kx, ky)
+    K = K / K.sum()
+    fftK = np.fft.fft2(K)
+    norm = 1.0 / np.sqrt(np.sum(K * K))
+    return fftK, norm
+
+
+def _smooth_noise(field, kernel):
+    """Periodic variance-preserving smoothing (FFT), ``kernel`` from
+    :func:`spatial_kernel`."""
+    fftK, norm = kernel
+    return np.fft.ifft2(np.fft.fft2(field) * fftK).real * norm
+
+
 def solve2d_stochastic(V, psi0, dt, Nt, X, Y, tau_phi, rng,
-                       scale_noise=1.0, report=False):
+                       scale_noise=1.0, noise_xi=0.0, report=False):
     """Evolve psi0 under V(x, y) plus delta-correlated thermal noise.
 
     Parameters
@@ -51,6 +93,9 @@ def solve2d_stochastic(V, psi0, dt, Nt, X, Y, tau_phi, rng,
     tau_phi : dephasing time in NATURAL units (time / TIME_UNIT)
     rng : numpy Generator used for the noise draws
     scale_noise : empirical calibration of the noise amplitude
+    noise_xi : spatial correlation length of the noise (nm; 0 = white).
+        >0 smooths each time-slice field with a variance-preserving Gaussian
+        kernel of this width, isolating the effect of spatial correlation.
     report : print the final norm
 
     Returns
@@ -68,10 +113,14 @@ def solve2d_stochastic(V, psi0, dt, Nt, X, Y, tau_phi, rng,
     K2 = kx[:, None] ** 2 + ky[None, :] ** 2
     opK = np.exp(-0.5j * K2 * dt)
 
+    kernel = spatial_kernel(noise_xi, (Nx, Ny), dx=dx)
+
     sigma = np.sqrt(noise_variance(tau_phi, dx, dy, dt, scale_noise))
     psi = psi0.copy()
     for _ in range(Nt):
         dV = sigma * rng.standard_normal((Nx, Ny))
+        if kernel is not None:
+            dV = _smooth_noise(dV, kernel)
         opV = np.exp(-0.5j * (V + dV) * dt)
         psi = opV * psi
         psi = np.fft.ifft2(opK * np.fft.fft2(psi))

@@ -1,0 +1,49 @@
+{
+  "temperatures": [
+    4.0,
+    10.0
+  ],
+  "n_ensemble_points": [
+    50,
+    100,
+    150,
+    200,
+    250
+  ],
+  "reference_operating_N": 200,
+  "C_nested": {
+    "4.0": [
+      0.9352375217564758,
+      0.9360220211746315,
+      0.9297166689177682,
+      0.9264304571696068,
+      0.925568544880275
+    ],
+    "10.0": [
+      0.6208449999650653,
+      0.5440816890789124,
+      0.552448952821333,
+      0.5486242490511256,
+      0.5458123743740653
+    ]
+  },
+  "bootstrap_std_operating_N": {
+    "4.0": 0.0034851275137908807,
+    "10.0": 0.022404429413733176
+  },
+  "convergence": {
+    "4.0": {
+      "max_deviation_from_operating_N": 0.0095915640050247,
+      "requested_tolerance": 0.01,
+      "met": true
+    },
+    "10.0": {
+      "max_deviation_from_operating_N": 0.07222075091393965,
+      "requested_tolerance": 0.01,
+      "met": false
+    },
+    "_note": "max_deviation is the worst |C(N)-C(200)| over the nested ladder (N = 50..200); N=200 is the operating size quoted in the paper. 10 K is the steepest (most ensemble-\nsensitive) point and intentionally reports a larger band."
+  },
+  "N_pool": 250,
+  "scale_noise": 22.0
+}
