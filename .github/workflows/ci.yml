@@ -56,10 +56,11 @@ jobs:
         run: python -m pytest tests/ -q
 
       - name: Confirm metrics JSON is the reconciled, self-labelled format
-        run: python - <<'PY'
+        run: |
+          python - <<'PY'
           import json
           m = json.load(open("results/entangletron_metrics.json"))
           assert m["convergence_imbalance_by_dx"]["readout_functional"] == "box_sum_legacy"
           assert m["convergence_imbalance_continuous"]["readout_functional"] == "continuous_interpolated"
           print("metrics reconciliation OK")
-        PY
+          PY
