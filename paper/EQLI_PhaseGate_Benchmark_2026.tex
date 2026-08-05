@@ -490,6 +490,24 @@ architecture requires no superconductors, no magnetic fields, and no
 sub-Kelvin refrigeration---a pragmatic route beyond CMOS for ultralow-power 
 ballistic logic.
 
+\section*{Methodological Note: Multi-LLM Orchestration and Human-in-the-Loop Auditing}
+\addcontentsline{toc}{section}{Methodological Note}
+
+\paragraph{Multi-Model AI Workflow.}
+This preprint is the product of an experimental multi-agent AI architecture directed by Fabrizio Terzi (founder of Pyragogy.org). Rather than relying on a single model, distinct Large Language Models (LLMs) were deployed with specialized roles across the research lifecycle:
+\begin{itemize}
+    \item \textbf{Ideation, Architectural Framing \& Coordination (Gemini):} High-level conceptualization of the EQLI framework, integration with Cognitive Rhythm Theory, prompt architecture, and structural synthesis.
+    \item \textbf{Drafting, Equations \& Code Generation (DeepSeek):} Derivation of the TDSE-2D split-step Fourier solver, Poisson--Thomas--Fermi electrostatics formulation, LaTeX typesetting, and initial draft assembly.
+    \item \textbf{Adversarial Peer Review \& Red-Teaming (Kimi AI):} Blind review analysis, identification of numerical/geometric edge cases, boundary-condition stress testing, and refutal of ungrounded physical claims.
+    \item \textbf{DevOps Execution \& Refactoring (Pi Agent):} Automated LaTeX compilation, file manipulation, versioning, and Git repository operations.
+\end{itemize}
+
+\paragraph{Human-in-the-Loop (HITL) Direction and Audit.}
+The human author served as the central orchestrator, domain editor, and critical auditor. Holding no formal academic credentials in quantum transport, the human author directed the multi-LLM pipeline using the Pyragogy framework. During human review, a critical mathematical mismatch was detected between Table 1 ($\langle C \rangle = 0.55$ at $10~\mathrm{K}$) and the narrative text ($C < 0.1$ at $77~\mathrm{K}$). The human author independently verified the analytical dephasing relation $\langle C \rangle = C_0 \exp(-t_{\mathrm{transit}}/\tau_\phi)$, recalculated the correct values ($\langle C \rangle = 0.588$ at $77~\mathrm{K}$), and instructed the agents to align the paper and code. This intervention revealed the operational feasibility of the device at liquid-nitrogen temperatures.
+
+\paragraph{Epistemic Status.}
+This document represents an exploratory case study in hybrid human-AI knowledge creation. It is an unreviewed theoretical preprint. The complete Git commit history, scripts, and logs are publicly accessible at \url{https://github.com/FTG-003/entangletronica}.
+
 \bibliographystyle{unsrt}
 \begin{thebibliography}{9}
 \bibitem{bertoni2000} A.~Bertoni, P.~Bordone, R.~Brunetti, C.~Jacoboni, 

@@ -295,6 +295,20 @@ the archived version of record:
 
 ---
 
+## 🔬 Methodological Note
+
+### Multi-LLM Orchestration & Human-in-the-Loop Workflow
+
+- **Multi-Agent Setup**:
+  - **Gemini**: Architectural framing, prompt design, and synthesis.
+  - **DeepSeek**: Code execution, Schrödinger solver implementation, and LaTeX drafting.
+  - **Kimi AI**: Adversarial peer review, edge-case audit, and physical validation.
+  - **Pi Agent**: Automated repository maintenance, compilation, and version control.
+- **Human Oversight**: Directed by Fabrizio Terzi (Pyragogy.org). The human lead audited the numerical data, corrected the $77\text{ K}$ dephasing budget contradiction via analytical evaluation of Eq. 12, and aligned the manuscript.
+- **Repository**: Publicly tracked on GitHub for open review and replication.
+
+---
+
 ## Contributing & community
 
 - **Contribute**: see [`CONTRIBUTING.md`](CONTRIBUTING.md) — ground rules,
