@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "entangletronica"
-version = "2.0.0"
+version = "5.0.0"
 description = "Reproducible split-step Schrödinger simulations of flying-electron interference in a gate-defined 2DEG double slit"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -43,7 +43,7 @@ test = ["pytest>=7"]
 [project.urls]
 Repository = "https://github.com/FTG-003/entangletronica"
 Paper = "https://github.com/FTG-003/entangletronica/blob/main/paper/EQLI_PhaseGate_Benchmark_2026.pdf"
-DOI = "https://zenodo.org/records/21786336"
+DOI = "https://zenodo.org/records/21802416"
 
 [tool.setuptools.packages.find]
 include = ["entangletronica*"]

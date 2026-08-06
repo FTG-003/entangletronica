@@ -9,6 +9,6 @@ simulate  : single-shot simulation pipeline (potential -> dynamics -> optics)
 """
 from . import potential, electron, gates, simulate
 
-__version__ = "2.0.0"
+__version__ = "5.0.0"
 
 __all__ = ["potential", "electron", "gates", "simulate", "__version__"]

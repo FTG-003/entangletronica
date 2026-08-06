@@ -324,12 +324,19 @@ the clean interference.
 
 ## Citation (How to cite)
 
-This study is released on Zenodo and identified by the DOI below; please cite
-the archived version of record:
+This study is released on Zenodo and identified by the DOI below; **cite
+version 5.0.0** (the current record).
 
 > **Fabrizio Terzi**, *Flying-Electron Interference Logic via Electrostatic
-> Quantum Lenses (Entangletronica)*, Zenodo, DOI: 10.5281/zenodo.21802416 (2026).
-> https://zenodo.org/records/21802416
+> Quantum Lenses (Entangletronica)*, Zenodo v5.0.0, DOI: 10.5281/zenodo.21802416 (2026).
+> https://zenodo.org/records/21802916
+
+**Version note (do not skip):** v5.0.0 corrects misleading temperature claims
+of earlier versions (the operating bound is a *conservative white-noise*
+T_max ≈ 11 K, not a room-temperature-compatible claim) and adds the
+quantitative electrostatic-selectivity analysis. Earlier versions (v1–v4)
+should **not** be cited as evidence; the current record is the version of
+record.
 
 ## Reproducibility & validation (2025-08-02)
 

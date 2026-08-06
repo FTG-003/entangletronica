@@ -1,13 +1,27 @@
 cff-version: 1.2.0
-message: "If you use this software and the accompanying study, please cite both the software and the paper."
+message: >-
+  "If you use this software and the accompanying study, please cite version
+  5.0.0. v5.0.0 corrects misleading temperature claims of earlier versions and
+  adds an electrostatic-selectivity analysis; earlier versions should not be
+  cited as evidence."
 type: software
 title: "EQLI / Entangletronica: Electrostatic Quantum-Lens Interferometry in InGaAs 2DEGs"
+version: "5.0.0"
 abstract: >-
-  Reproducible split-step Schroedinger simulations of a single flying electron
+  Reproducible split-step Schrodinger simulations of a single flying electron
   through a gate-defined double-slit interferometer in a ballistic 2DEG, with a
   programmable electrostatic phase lens, a Poisson-Thomas-Fermi voltage mapping,
-  a stochastic dephasing budget, and a scalable two-input XOR gate proposal.
-  Companion to the EQLI preprint.
+  a conservative white-noise dephasing budget, a stochastic-dephasing ensemble,
+  and a correlated-noise check. Companion to the EQLI preprint.
+
+  Honest scope: this is a numerical model, not an experiment — no experimental
+  data are included. The operating temperature bound T_max ~ 11 K is a
+  conservative worst case for white noise (rising to ~29 K for spatially
+  correlated noise), and the single-electron-transistor (SET) readout at
+  T < 1 K is the practical thermal bottleneck, not the coherence bound. The
+  electrostatic differential-selectivity ratio is ~0.69; the 50 meV/V
+  amplitude and the dephasing scale s_phi = 22 are empirical calibration
+  (consistency) parameters, not first-principles predictions.
 authors:
   - family-names: "Terzi"
     given-names: "Fabrizio"
@@ -21,6 +35,6 @@ keywords:
   - electrostatic phase gate
   - quantum simulation
 license: MIT
-doi: 10.5281/zenodo.21786336
+doi: 10.5281/zenodo.21802416
 repository-code: "https://github.com/FTG-003/entangletronica"
-date-released: "2026-08-04"
+date-released: "2026-08-06"

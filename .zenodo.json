@@ -1,0 +1,32 @@
+{
+  "title": "EQLI / Entangletronica: Electrostatic Quantum-Lens Interferometry in InGaAs 2DEGs (v5.0.0)",
+  "description": "Reproducible split-step Schrodinger simulations of a single flying electron through a gate-defined double-slit interferometer in a ballistic 2DEG (InGaAs), with a programmable electrostatic phase lens, a Poisson-Thomas-Fermi voltage mapping, a conservative white-noise dephasing budget, a 200-realisation stochastic-dephasing ensemble, and correlated-noise checks.\n\nIMPORTANT VERSION NOTE: v5.0.0 corrects misleading temperature claims of earlier versions and adds an electrostatic-selectivity analysis (differential-selectivity ratio ~0.69; amplitude 50 meV/V and dephasing scale s_phi=22 are empirical calibration parameters, not first-principles predictions; SET readout at T < 1 K is the practical thermal bottleneck, not the ~11 K interferometer-coherence bound). v1 and earlier versions should not be cited: they overstate the temperature compatibility of the proposed logic primitives. The current record is the version of record.",
+  "creators": [
+    {
+      "name": "Terzi, Fabrizio",
+      "affiliation": "Independent Researcher",
+      "orcid": "0000-0001-9131-3520"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "flying-electron logic",
+    "quantum interferometry",
+    "two-dimensional electron gas (2DEG)",
+    "split-step Fourier method",
+    "electrostatic phase gate",
+    "quantum simulation"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isNewVersionOf",
+      "identifier": "10.5281/zenodo.21802416"
+    },
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/FTG-003/entangletronica"
+    }
+  ],
+  "upload_type": "software",
+  "version": "5.0.0"
+}
