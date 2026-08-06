@@ -48,9 +48,10 @@ $V_{\text{eff}}(x,y)$, (ii) run an explicit 200-realisation stochastic-dephasing
 ($\mu>10^6\,\text{cm}^2\text{/Vs}$) heterostructures, and (iii) propose a 
 scalable two-input XOR gate architecture using dual independent phase lenses. 
 The split-step Fourier solver conserves norm to $10^{-13}$ and is converged 
-to second order in space. Our results establish quantitative design rules for 
-ballistic flying-electron logic without superconducting proximity, magnetic 
-fields, or sub-Kelvin refrigeration.
+to second order in space. Our results establish quantitative design rules for
+ballistic flying-electron logic in InGaAs 2DEGs; the single-electron-transistor
+readout ($T\lesssim\SI{1}{K}$), not the interferometer coherence, is identified
+as the dominant thermal bottleneck of the architecture.
 \end{abstract}
 
 \noindent\textbf{Keywords:} flying-electron logic; quantum interferometry; 
@@ -67,9 +68,13 @@ interference: constructive or destructive superposition at a detector encodes
 the output. Experimental milestones include the electronic Mach--Zehnder 
 interferometer (MZI) in GaAs/AlGaAs 2DEGs~\cite{ji2003}, where electrostatic 
 gates control the relative phase between edge-state arms, and coherent 
-transport in quantum-wire Y-junctions~\cite{bertoni2000}. Yet the field has 
-remained largely a demonstration of wave-packet coherence, lacking a clear 
-pathway to scalable, room-temperature-compatible logic primitives.
+transport in quantum-wire Y-junctions~\cite{bertoni2000}. Yet the field has
+remained largely a demonstration of wave-packet coherence, lacking a clear
+pathway to scalable logic. This work instead benchmarks ballistic
+flying-electron logic operable up to $T_{\max}\approx\SI{11}{K}$
+(conservative white-noise bound), with projected extension to
+$\approx\SI{29}{K}$ under spatially correlated noise, and requiring no
+quantizing magnetic field.
 
 The central obstacle is the absence of a \emph{quantitative bridge} between 
 idealised wave simulations and real device electrostatics. Most theoretical 
@@ -106,6 +111,22 @@ sensitivity). Sec.~\ref{sec:coherence} gives the coherence budget and
 temperature limits. Sec.~\ref{sec:device} compares the double-slit geometry 
 with the Mach--Zehnder platform and presents the XOR scalability analysis. 
 Sec.~\ref{sec:concl} concludes with an experimental roadmap.
+
+\paragraph{Scope and Limitations.} Before proceeding, we state explicitly
+what this work is and is not. (i) \emph{No experimental data}: every number
+reported here is the output of a numerical simulation, and the paper makes
+no claim of measurement. (ii) \emph{Material parameters}: the InGaAs values
+($m^*=0.042\,m_0$, $\mu=2\times10^6\,\text{cm}^2\text{/Vs}$, the
+$\tau_\phi(T)$ scaling) are plausible literature values, not anchored to a
+specific measured sample; a real device will require sample-specific
+calibration of every parameter. (iii) \emph{Readout bottleneck}: the
+interference signal is read out electrically via a single-electron
+transistor (SET), which typically operates at $T<1\,\mathrm{K}$ with charge
+noise of order $10^{-5}\,e/\sqrt{\mathrm{Hz}}$; the practical temperature
+floor of the system is therefore set by the SET readout, not by the
+$\approx\SI{11}{K}$ coherence bound of the interferometer itself. These
+three caveats are revisited where they matter
+(Secs.~\ref{sec:transfer}, \ref{sec:coherence}, \ref{sec:device}).
 
 \section{Model}
 \label{sec:model}
@@ -186,17 +207,32 @@ lens is wider than the bare gate geometry. The widths are extracted
 self-consistently from the numerical $V_{\text{eff}}$ 
 (\texttt{electrostatics.py}, Fig.~\ref{fig:poisson}) and replace the toy 
 values of earlier drafts; the Gaussian parametrisation of Eq.~(\ref{eq:veff}) 
-remains accurate at the operating point while the phenomenological factor 
+remains accurate at the operating point while the phenomenological factor
 $k_\phi$ is replaced by a physical control knob.
 
+\paragraph{Amplitude calibration caveat.} The strip model of
+Eqs.~(\ref{eq:poisson})--(\ref{eq:thomas-fermi}) underestimates the
+capacitive coupling of a real three-dimensional gate: it omits the AlGaAs
+barrier (which changes the effective gate--2DEG distance), the image
+charges in the gate and the screening layer, and the non-locality of the
+screening response. The quoted $50~\mathrm{meV/V}$ is therefore a
+\emph{calibration parameter} anchored to the operating point
+$V_g=\SI{-0.3}{V}\to V_0=\SI{-15}{meV}$, not a first-principles prediction.
+What \emph{does} emerge from the calculation is the \emph{shape} of the
+lens ($\sigma_x\approx\SI{13}{nm}$, $\sigma_y\approx\SI{15}{nm}$), which
+is fixed by the screening physics and drives the selectivity statements of
+Secs.~\ref{sec:geometry}; a change of barrier thickness or doping would
+rescale the amplitude while leaving the emerged widths essentially
+unchanged.
+
 \paragraph{Phase-selectivity limitation.} The emerged lens is broad compared
-with the slit pitch. With $\sigma_y\approx\SI{15}{nm}$ and a slit separation
-of $\SI{24}{nm}$, the screened field at the lower slit is a non-negligible
-$V_{\mathrm{eff}}(0,\mp\SI{24}{nm})\approx-4.6\,\text{meV}$: about $31\%$
-of the on-lens value $-15\,\text{meV}$ at $V_g=\SI{-0.3}{V}$. The gate
-therefore modulates — and phase-shifts — \emph{both} arms, and only a
-fraction of the voltage swing is truly differential between the paths. The
-numerical simulation already treats both arms self-consistently, so every
+with the slit pitch. With $\sigma_y\approx\SI{15}{nm}$ and slit pitch
+$\SI{24}{nm}$, the screened field at the centre of the lower slit is a
+non-negligible fraction of the on-lens depth: the differential selectivity
+ratio is $\approx0.69$, not $1.0$ (Sec.~\ref{sec:geometry}). The gate
+therefore modulates — and phase-shifts — \emph{both} arms, and only
+$\approx69\%$ of the voltage swing is truly differential between the paths.
+The numerical simulation already treats both arms self-consistently, so every
 transfer and coherence number reported below is exact for the device
 modelled; but true single-slit phase selectivity needs a thinner lens, which
 a $\SI{20}{nm}$ gate finger cannot fabricate without either needle/focused
@@ -229,8 +265,23 @@ adds a path-dependent phase
 \approx -\frac{V_0(V_g)\,\sigma_x}{\hbar v_g}\sqrt{\frac{\pi}{2}},
 \label{eq:phase}
 \end{equation}
-which displaces the interference figure at the detector plane 
+which displaces the interference figure at the detector plane
 $x_d=\SI{110}{nm}$.
+
+\paragraph{Differential selectivity (cross-arm coupling).} The quantitative
+cross-talk estimate: with $\sigma_y\approx\SI{15}{nm}$ and slit pitch
+$\SI{24}{nm}$, the screened potential at the centre of the \emph{lower}
+slit is $V_{\mathrm{eff}}(0,-\SI{12}{nm})\approx-\SI{4.6}{meV}$, i.e.
+$\approx\SI{31}{\percent}$ of the on-lens value
+$V_{\mathrm{eff}}(0,+\SI{12}{nm})\approx-\SI{15}{meV}$ at
+$V_g=\SI{-0.3}{V}$ (\texttt{scripts/compute\_selectivity.py},
+\texttt{results/selectivity.json}). The differential selectivity ratio is
+therefore $\approx0.69$, not $1.0$. This reduces the \emph{potential}
+phase-gate efficiency (only $\approx69\%$ of the swing is differential) but
+does not invalidate the gate: the simulation treats both arms
+self-consistently, so the transfer slope of Sec.~\ref{sec:transfer} is
+exact for the device as modelled. A thinner lens would require needle gates
+or high-$\kappa$ dielectrics (Sec.~\ref{sec:electrostatics}).
 
 \subsection{Dephasing model}
 \label{sec:dephasing}
@@ -320,9 +371,17 @@ $\mathcal{I}\approx\mathcal{I}_0+|S_V|\,|V_g|$ with
 $|S_V|\approx\SI{0.91}{V^{-1}}$. The recorded scan extends to 
 $V_g=\SI{-0.75}{V}$; the maximum simulated imbalance is $0.76$ at this deepest 
 setting, an extrapolation of the phase model beyond the linear-screening window 
-(for a real gate the coupling $V_0(V_g)$ saturates). The linearity follows 
-directly from Eq.~(\ref{eq:phase}): $\phi\propto V_0$, with $V_0\propto V_g$ in 
+(for a real gate the coupling $V_0(V_g)$ saturates). The linearity follows
+directly from Eq.~(\ref{eq:phase}): $\phi\propto V_0$, with $V_0\propto V_g$ in
 the shallow-lens regime.
+
+\paragraph{Regime statement, not a discovery.} The near-unity
+$R^2=0.9997$ is not a special device property. It reflects the fact that the
+two-bin detector samples a narrow, near-linear shoulder of a single
+interference lobe in the shallow-lens regime ($|V_g|\le\SI{0.3}{V}$); the
+scan does not cross a fringe maximum or minimum. $R^2$ is therefore a
+\emph{regime statement} — the operating window is linear — not a discovery
+about the device.
 
 \subsection{Fringe displacement and contrast}
 \label{sec:fringe}
@@ -354,7 +413,7 @@ L_2(\Delta x) = \Big[\int\!\big(P_{\Delta x}(y)-P_{0.5\,\text{nm}}(y)\big)^2\,
 \label{eq:L2err}
 \end{equation}
 
-\section{Coherence Budget and Temperature Limits}
+\section{Coherence Budget: Conservative White-Noise Bound}
 \label{sec:coherence}
 
 We now quantify the robustness of the phase gate against thermal dephasing. 
@@ -436,6 +495,25 @@ conservative operating bound and treat the analytical values as the
 ideal-device upper envelope. All verification scripts, JSON results, and
 simulation sources are tracked in the public GitHub repository.
 
+\paragraph{Why $s_\phi=22$, not $2.32$.} The empirical calibration factor
+$s_\phi=22$ was required because the delta-correlated white-noise model
+overestimates dephasing when normalised naively to $\tau_\phi(T)$: the two
+interfering paths overlap spatially for most of the transit, and only the
+\emph{differential} (between-path) phase difference drives the dephasing.
+The raw value $s_\phi=2.32$ from the initial spec produces no visible
+dephasing at any temperature, revealing a mismatch between the
+phenomenological $\tau_\phi$ and the spatial overlap of the wave packet with
+the noise field. The calibration is therefore a \emph{consistency fix}, not
+a physical prediction.
+
+Figure~\ref{fig:corr} overlays the visibility curves of the white-noise
+model and of spatially correlated noise of length $\xi=\SI{5}{nm}$ and
+$\SI{10}{nm}$ at the \emph{same local amplitude}
+(\texttt{scripts/noise\_correlation.py}). $T_{\max}$ rises from
+$\SI{11.4}{K}$ to $\SI{14.8}{K}$ to $\SI{29.2}{K}$, visualising
+immediately that the $\approx\SI{11}{K}$ bound of
+Table~\ref{tab:coherence} is the conservative worst case, not a ceiling.
+
 \subsection*{Robustness of the numerical budget (referee due diligence)}
 \label{sec:robust}
 
@@ -513,6 +591,7 @@ Magnetic field & Not required & Required (edge states) \\
 Operating $T$ & $\lesssim 10\,$K (projected) & $\lesssim 100\,$mK \\
 Phase control & Single gate behind slit & Two independent arms \\
 Logic output & Threshold imbalance & Differential current \\
+Readout temperature & $<1\,\mathrm{K}$ (SET) & $<1\,\mathrm{K}$ (SET) or $\sim\SI{100}{mK}$ (QPC current) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -554,8 +633,23 @@ amplification (single-electron transistor readout), but the phase encoding
 itself is dissipationless. In this respect the device occupies a distinct 
 niche from topologically protected schemes~\cite{nayak2008}: here the 
 computation is carried by a generic geometric phase rather than by non-Abelian 
-anyons, trading error resilience for a far simpler fabrication and control 
+anyons, trading error resilience for a far simpler fabrication and control
 stack.
+
+\paragraph{Readout and fan-out constraints.} The imbalance
+$\mathcal{I}$ of Eq.~(\ref{eq:xor}) is a difference of probabilities between
+two detector bins \emph{for a single electron} — a statistical observable,
+not a directly measurable current. Extracting it requires a single-electron
+transistor (SET) integrating charge over times $\gg
+t_{\mathrm{transit}}\approx\SI{0.24}{ps}$; SETs typically operate at
+$T<1\,\mathrm{K}$ with charge noise of order
+$10^{-5}\,e/\sqrt{\mathrm{Hz}}$. The readout — not the coherence of the
+interferometer — is therefore the dominant thermal bottleneck of the
+architecture (Sec.~\ref{sec:device}). Within this constraint the XOR
+establishes the phase-encoding physics as a conceptual proof-of-concept,
+not an immediate roadmap for classical logic; a practical gate stack needs
+an integrated low-temperature charge detector per output, or a different
+readout principle.
 
 \paragraph{Error tolerance.} A phase error $\delta\phi$ reduces the visibility 
 by $\Delta C \approx C_0(\delta\phi)^2/2$. From Eq.~(\ref{eq:phase}), 
@@ -592,13 +686,15 @@ $\approx\SI{15}{nm}$-wide screened lens is broader than the
 $\SI{24}{nm}$ slit pitch, so the gate is not perfectly single-slit-selective
 and a thinner lens will require needle gates or high-$k$ dielectrics.
 
-Immediate next steps are (i) experimental verification of the voltage-to-phase 
-mapping in a high-mobility InGaAs/InAlAs heterostructure, (ii) integration 
-with single-electron transistor readout for fan-out, and (iii) exploration 
-of in-flight gate modulation for sub-picosecond logic switching. The 
-architecture requires no superconductors, no magnetic fields, and no 
-sub-Kelvin refrigeration---a pragmatic route beyond CMOS for ultralow-power 
-ballistic logic.
+Immediate next steps are (i) experimental verification of the voltage-to-phase
+mapping in a high-mobility InGaAs/InAlAs heterostructure, (ii) integration
+with single-electron transistor readout for fan-out, and (iii) exploration
+of in-flight gate modulation for sub-picosecond logic switching. The
+architecture requires no superconductors and no quantizing magnetic fields;
+its practical temperature floor is set by the single-electron-transistor
+readout ($T\lesssim\SI{1}{K}$), not by the interferometer coherence bound of
+Sec.~\ref{sec:coherence}. Within that floor it remains a pragmatic,
+ultralow-power ballistic-logic testbed.
 
 \section*{Methodological Note: Multi-LLM Orchestration and Human-in-the-Loop Auditing}
 \addcontentsline{toc}{section}{Methodological Note}
@@ -744,6 +840,21 @@ Solid line: analytical visibility of Eq.~(\ref{eq:visibility}) with $p=1.5$
 200 noise realisations. The numerical device operates with $C>0.5$ up to 
 $T_{\max}\approx\SI{11}{K}$.}
 \label{fig:coherence}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\linewidth]{../figures/fig_correlation_overlay.pdf}
+\caption{\textbf{Correlated vs.\ white noise (same local amplitude).}
+$\expt{C(T)}$ for the delta-correlated model ($\xi=0$, the conservative
+limit) and for spatially correlated noise of length $\xi=\SI{5}{nm}$,
+$\SI{10}{nm}$ (\texttt{scripts/noise\_correlation.py}). Markers: $T_{\max}$
+for each model ($11.4\!\rightarrow\!14.8\!\rightarrow\!29.2~\mathrm{K}$).
+Correlated environments dephase the two interfering paths progressively
+\textit{in common}, so that component cancels from the relative phase; the
+white-noise curve is therefore the worst case and the
+$\approx\SI{11}{K}$ bound is a lower bound.}
+\label{fig:corr}
 \end{figure}
 
 \begin{figure}[t]

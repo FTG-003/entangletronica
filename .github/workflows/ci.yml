@@ -43,6 +43,9 @@ jobs:
       - name: Rebuild spatially correlated noise check
         run: python scripts/noise_correlation.py
 
+      - name: Rebuild cross-arm selectivity (cross-talk ratio, Sec. 2.3)
+        run: python scripts/compute_selectivity.py
+
       - name: Rebuild robustness multi-panel figure
         run: python scripts/make_robustness_figure.py
 

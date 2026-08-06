@@ -59,5 +59,6 @@
   ],
   "t_transit_ps": 0.24,
   "T_cross_half_K": 11.39512373176027,
-  "note": "delta-correlated white noise; scale_noise empirically calibrated so C(4 K) matches C_ana(4 K) (see scripts/_calibrate_scale.py); high-T deviation from the exponential reflects the strong-scattering limit of the white-noise model (paper Sec. 2.4, methodological note)"
+  "note": "delta-correlated white noise; scale_noise empirically calibrated so C(4 K) matches C_ana(4 K) (see scripts/_calibrate_scale.py); high-T deviation from the exponential reflects the strong-scattering limit of the white-noise model (paper Sec. 2.4, methodological note)",
+  "calibration_note": "s_phi = 22 was required because the delta-correlated white-noise model OVERESTIMATES dephasing when normalized naively to tau_phi(T): the two interfering paths overlap spatially for most of the transit and only the *differential* (between-path) phase matters. The raw spec value s_phi = 2.32 produces no visible dephasing, exposing a mismatch between the phenomenological tau_phi and the spatial overlap of the wave packet with the noise field. The calibration is therefore a CONSISTENCY FIX, anchored to C_num(4 K) = C_ana(4 K), NOT a physical prediction."
 }

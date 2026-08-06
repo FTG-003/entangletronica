@@ -1,0 +1,13 @@
+{
+  "Vg_V": -0.3,
+  "V_at_upper_slit_meV": -15.0,
+  "V_at_lower_slit_meV": -4.603899319927961,
+  "cross_arm_coupling_ratio": 0.3069266213285307,
+  "differential_selectivity": 0.6930733786714693,
+  "slit_pitch_nm": 24.0,
+  "lens_centre_upper_slit": {
+    "x_nm": 68.0,
+    "y_nm": 12.0
+  },
+  "note": "V_eff sampled at the slit centres in the lens frame (upper (0,0), lower (0,-24 nm)). ratio = |V_lower|/|V_upper|; differential_selectivity = 1 - ratio. The lens is not single-slit selective: it also phase-shifts the lower arm."
+}

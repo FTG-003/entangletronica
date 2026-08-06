@@ -24,6 +24,20 @@ Scientific-due-diligence additions (2026, referee-driven):
      local amplitude C(xi>0) >= C(xi=0) and T_max rises with xi (white noise
      is the conservative worst case).
 
+v2 corrections-kit additions (2026):
+  9. Differential selectivity (results/selectivity.json, Sec. 2.3): the
+     cross-arm coupling ratio |V_eff(lower slit)/V_eff(upper slit)| must lie
+     in [0.25, 0.40] (i.e. ~31% at the operating point) and the differential
+     selectivity 1 - ratio in [0.60, 0.75]: the lens is NOT single-slit
+     selective, and the paper says so.
+ 10. Dephasing calibration documented (results/coherence_ensemble.json): the
+     committed JSON must carry a "calibration_note" stating that s_phi = 22
+     is a consistency fix (the raw spec value 2.32 yields no dephasing), not
+     a physical prediction.
+ 11. Text-honesty regression (paper/*.tex): the phrase "room temperature"
+     must NOT appear anywhere in the manuscript, and "conservative
+     white-noise bound" must appear at least once.
+
 Tests 3-8 read the *committed* results/*.json (N_ens = 200).  If they are
 absent (fresh clone) they fall back to a small fixed-seed ensemble so the
 suite still exercises the machinery; CI regenerates the full JSONs first.
@@ -358,6 +372,68 @@ def test_noise_correlation():
         assert Cs[10.0] >= Cs[0.0], (
             f"fallback direction wrong: C(xi=0)={Cs[0.0]:.3f} "
             f"C(xi=10)={Cs[10.0]:.3f}")
+
+
+def test_differential_selectivity():
+    """Cross-arm leakage of the phase lens (paper Sec. 2.3): the emerged lens
+    (sigma_y ~ 15 nm) is broader than the slit pitch (24 nm), so the screened
+    field at the LOWER slit is a non-negligible fraction of the on-lens value.
+    ratio = |V_eff(0,-12 nm)| / |V_eff(0,+12 nm)| must be in [0.25, 0.40]
+    (~31% at Vg = -0.3 V) and differential_selectivity = 1 - ratio in
+    [0.60, 0.75].  Prefers results/selectivity.json; else computes it live."""
+    path = os.path.join(ROOT, "results", "selectivity.json")
+    if os.path.exists(path):
+        d = json.load(open(path))
+        ratio = d["cross_arm_coupling_ratio"]
+        sel = d["differential_selectivity"]
+        v_up, v_low = d["V_at_upper_slit_meV"], d["V_at_lower_slit_meV"]
+    else:
+        lens = electrostatics.PoissonTFLens()
+        v_up = float(lens.get_lens(0.0, 0.0, -0.3))
+        v_low = float(lens.get_lens(0.0, -24.0, -0.3))
+        ratio = abs(v_low) / abs(v_up)
+        sel = 1.0 - ratio
+    assert abs(v_up - (-15.0)) <= 1.0, f"V(upper slit) = {v_up} meV"
+    assert v_low < 0.0, "lens is attractive: V(lower slit) must be negative"
+    assert 0.25 <= ratio <= 0.40, (
+        f"cross_arm_coupling_ratio = {ratio:.3f} outside [0.25, 0.40] "
+        f"(V_low = {v_low:.2f} meV, V_up = {v_up:.2f} meV)")
+    assert 0.60 <= sel <= 0.75, (
+        f"differential_selectivity = {sel:.3f} outside [0.60, 0.75]")
+    assert abs(ratio - 0.307) < 0.02, (  # pinned to the paper's ~31%
+        f"ratio {ratio:.3f} must be the paper's operating-point value ~0.31")
+
+
+def test_dephasing_calibration_documented():
+    """The committed coherence JSON must document WHY s_phi = 22: the raw
+    spec value 2.32 produces no visible dephasing, so the empirical value is a
+    consistency fix anchored to the 4 K analytical point, not a physical
+    prediction.  If the field is missing the test fails (paper Sec. 5 note)."""
+    d = _load_ensemble()
+    assert d is not None, "results/coherence_ensemble.json missing"
+    note = d.get("calibration_note", "")
+    assert note, "coherence_ensemble.json lacks 'calibration_note'"
+    low = note.lower()
+    assert "2.32" in note, "note must mention the raw spec value 2.32"
+    assert "consistency fix" in low, "note must call the calibration a fix"
+    assert "physical prediction" in low, (
+        "note must state the calibration is NOT a physical prediction")
+    assert d["scale_noise"] == 22.0
+
+
+def test_no_room_temperature_claim():
+    """Text-honesty regression: the manuscript must NOT claim or even mention
+    room-temperature operation anywhere, and must contain the conservative
+    white-noise-bound phrasing of the operating bound."""
+    tex = os.path.join(ROOT, "paper", "EQLI_PhaseGate_Benchmark_2026.tex")
+    assert os.path.exists(tex), f"paper source missing: {tex}"
+    src = open(tex).read()
+    low = src.lower()
+    assert "room temperature" not in low, (
+        "paper still mentions 'room temperature' (must be removed: T_max~11 K "
+        "is the honest bound)")
+    assert "conservative white-noise bound" in low, (
+        "paper must state the 'conservative white-noise bound' framing")
 
 
 if __name__ == "__main__":

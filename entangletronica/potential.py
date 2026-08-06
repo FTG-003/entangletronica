@@ -164,42 +164,6 @@ def landscape_mz(x, y, Vg=0.0, splitter_k=1.0, phase_k=1.0, dx=0.0, Vwalls=None)
     return V
 
 
-def landscape_double_slit(x, y, Vg=0.0, barrier_k=1.0, lens_k=1.0):
-    """Double-slit + Fourier lens (UNUSED / superseded).
-
-    Dead code: the published pipeline drives `landscape_mz` (see
-    gates.py / simulate.py) for the interference experiment described in
-    the paper, so this double-slit-with-lens landscape and the\n    `landscape_focus` variant below are retained only as an archived black-
-    board sketch. No test, figure, or CLI entry point reaches them; a fresh
-    `grep -r landscape_double_slit` across the package matches only this
-    definition. Kept for provenance rather than deleted.
-
-      * barrier at x=90 (a=+150, barrier_k): two apertures at y=+-30
-      * lens at x=140  (a=-25, lens_k): focusing lens (Gaussian well)
-    """
-    V = np.zeros_like(x)
-    V += wall(x, y, xx=0.0, w=8.0, a=30.0)
-    V += barrier_k * 150.0 * (gauss(x, 90.0, 8.0) * (1.0 - gauss(y, -30.0, 6.0)) *
-                              (1.0 - gauss(y, 30.0, 6.0)))
-    V += lens(x, y, c=(140.0, 0.0), s=14.0, a=-25.0 * lens_k)
-    V += wall(x, y, xx=200.0, w=8.0, a=30.0)
-    return V
-
-
-def landscape_focus(x, y, Vg=0.0, lens_k=1.0):
-    """Single focusing lens (section 4.1). (UNUSED / superseded).
-
-    Dead code, same provenance as `landscape_double_slit`: unused by the
-    shipped model (which uses `landscape_mz`), and unreferenced anywhere
-    in the package, tests, or scripts. Retained only as an archived sketch.
-    """
-    V = np.zeros_like(x)
-    V += wall(x, y, xx=0.0, w=8.0, a=30.0)
-    V += lens(x, y, c=(90.0, 0.0), s=14.0, a=-25.0 * lens_k)
-    V += wall(x, y, xx=200.0, w=8.0, a=30.0)
-    return V
-
-
 # ----------------------------------------------------------------------------- dynamic phase sweeps
 def phase_sweep(x, y, t, phi, omega=0.10, A=0.0, c=(100.0, -20.0), s=12.0, a=-3.0):
     """Lens modulated in amplitude: A*sin(omega*t + phi) added to the base well.

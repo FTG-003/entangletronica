@@ -174,6 +174,55 @@ def summarize(per_T, T_list=None):
     return C_num, C_std, imb_mean, imb_std, imb_profile, C_ana
 
 
+def _plot_correlation_overlay(C_num_white):
+    """Overlay C(T) for delta-correlated and xi = 5/10 nm correlated noise.
+
+    Reads results/noise_correlation.json (produced by scripts/noise_correlation.py;
+    delta-correlated local amplitude held FIXED across xi).  If the file is
+    absent (e.g. first run in a fresh clone), plots only the white-noise curve
+    of this run with an annotation.  Shows immediately that the delta-correlated
+    model is the conservative worst case: T_max rises with xi.
+    """
+    fig, ax = plt.subplots(figsize=(6.6, 4.4))
+    colors = {0.0: "#1f77b4", 5.0: "#ff7f0e", 10.0: "#2ca02c"}
+    corr_path = os.path.join(HERE, "results", "noise_correlation.json")
+    have = os.path.exists(corr_path)
+    if have:
+        d = json.load(open(corr_path))
+        T_list = np.array(d["temperatures"])
+        for xi in [0.0, 5.0, 10.0]:
+            key = f"{xi:.1f}"
+            C = d["C_by_xi_numerical"][key]
+            tmx = d["Tmax_by_xi_K"][key]
+            ax.plot(T_list, C, marker="o", ms=4, lw=1.3, color=colors[xi],
+                    label=f"$\\xi={xi:.0f}$ nm ($T_{{\\rm max}}={tmx:.1f}$ K)")
+            ax.axvline(tmx, ls=":", lw=0.8, color=colors[xi])
+        ax.text(0.02, 0.06,
+                "white noise $\\Rightarrow$ conservative worst case:\n"
+                "$T_{\\max}$ 11.4 $\\to$ 14.8 $\\to$ 29.2 K",
+                transform=ax.transAxes, fontsize=8, va="bottom")
+    else:
+        T_list = np.array(TEMPERATURES_K)
+        ax.plot(T_list, C_num_white, marker="o", ms=4, lw=1.3,
+                color="#1f77b4", label="delta-correlated (white)")
+        ax.text(0.98, 0.03,
+                "no results/noise_correlation.json: showing white-noise "
+                "curve only (run scripts/noise_correlation.py for the overlay)",
+                transform=ax.transAxes, fontsize=8, ha="right")
+    ax.set_xlabel("temperature $T$ (K)")
+    ax.set_ylabel(r"$\langle C\rangle$")
+    ax.set_ylim(0, 1.05)
+    ax.legend(fontsize=8, loc="upper right", framealpha=0.9)
+    ax.set_title("Spatially correlated noise: white noise is the worst case",
+                 fontsize=10)
+    ax.grid(alpha=0.3)
+    fig.tight_layout()
+    overlay = os.path.join(HERE, "figures", "fig_correlation_overlay.pdf")
+    fig.savefig(overlay)
+    plt.close(fig)
+    print(f"wrote {overlay}")
+
+
 def main():
     os.makedirs(os.path.join(HERE, "results"), exist_ok=True)
     os.makedirs(os.path.join(HERE, "figures"), exist_ok=True)
@@ -201,6 +250,17 @@ def main():
                  "_calibrate_scale.py); high-T deviation from the exponential "
                  "reflects the strong-scattering limit of the white-noise "
                  "model (paper Sec. 2.4, methodological note)"),
+        "calibration_note": (
+            "s_phi = %g was required because the delta-correlated "
+            "white-noise model OVERESTIMATES dephasing when normalized naively "
+            "to tau_phi(T): the two interfering paths overlap spatially for "
+            "most of the transit and only the *differential* (between-path) "
+            "phase matters. The raw spec value s_phi = 2.32 produces no visible "
+            "dephasing, exposing a mismatch between the phenomenological "
+            "tau_phi and the spatial overlap of the wave packet with the noise "
+            "field. The calibration is therefore a CONSISTENCY FIX, anchored "
+            "to C_num(4 K) = C_ana(4 K), NOT a physical prediction."
+            % SCALE_NOISE),
     }
     with open(JSON_OUT, "w") as f:
         json.dump(out, f, indent=2)
@@ -251,6 +311,8 @@ def main():
     fig.tight_layout()
     fig.savefig(FIG)
     print(f"wrote {FIG}")
+
+    _plot_correlation_overlay(C_num)
 
     for T, c, ca, s in zip(TEMPERATURES_K, C_num, C_ana, C_std):
         print(f"T={T:5.1f}K  C_num={c:.3f}  C_ana={ca:.3f}  "

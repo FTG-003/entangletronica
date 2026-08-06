@@ -18,6 +18,27 @@ observation.
 
 ---
 
+## Known limitations (read this first)
+
+1. **No experimental data.** Every number in this repository is the output of
+a numerical simulation. Nothing here is a measurement; the paper makes no
+claim of one.
+2. **Empirical electrostatic calibration.** The strip (Laplace) model of the
+gate underestimates the capacitive coupling of a real 3D gate (no AlGaAs
+barrier, no image charges, no screening non-locality). The 50 meV/V
+amplitude is a *calibration* anchored to Vg = −0.3 V → V₀ = −15 meV, not a
+first-principles prediction; only the lens *shape* (σx ≈ 13 nm, σy ≈ 15 nm)
+emerges from the Poisson–Thomas–Fermi calculation. Related: the dephasing
+scale sφ = 22 is a consistency fix (the raw spec value 2.32 dephases
+nothing), not a physical prediction.
+3. **SET readout bottleneck.** The interference signal is read out via a
+single-electron transistor (SET), which typically operates at T < 1 K with
+charge noise ~1e-5 e/√Hz. The *practical* temperature floor of the system
+is set by the readout, not by the ≈ 11 K coherence bound of the
+interferometer.
+
+---
+
 ## What this is
 
 A cleanly-engineered, fully reproducible simulation pipeline for a **single
@@ -42,7 +63,7 @@ epistemic weight, and it matters that they are not conflated.
 
 | Number value | What it actually is | Epistemic weight |
 |---|---|---|
-| **R² = 0.9997** (fit to transfer curve) | Self-consistency of a deterministic solver in a linear regime | **Low** — a well-engineered PDE solver *must* give a nearly-linear curve here. Quasi-tautological; sanity check, not discovery. |
+| **R² = 0.9997** (regime statement: linear-shoulder sampling of a single interference lobe) | Self-consistency of a deterministic solver in a linear regime | **Low** — a well-engineered PDE solver *must* give a nearly-linear curve here. Quasi-tautological; sanity check, not discovery. |
 | **Norm conserved to 1e-13** | Round-off-level unitarity of the split-step scheme | **Solver correctness** (numerics), not a device result. |
 
 These belong to the **numerical engine**, and are reported because they
@@ -227,6 +248,7 @@ python scripts/ensemble_convergence.py   # nested C(N) check, ±0.01 at 4 K (~2�
 python scripts/scale_sensitivity.py      # T_max(s=22±5) = 11.4±3.6 K (~4–5 min)
 python scripts/noise_correlation.py      # ξ = 0/5/10 nm correlated noise (~4 min)
 python scripts/make_robustness_figure.py # fig_robustness.pdf multi-panel (sec)
+python scripts/compute_selectivity.py     # cross-arm coupling ratio -> results/selectivity.json (sec)
 python scripts/make_missing_figures.py   # fig_poisson_mapping, fig_coherence, fig_xor_schematic (paper §2–4)
 python scripts/make_animation.py         # assets/iframe_flight.gif
 python -m pytest tests/ -q               # full suite (smoke + regression pins + physics tests)
@@ -234,7 +256,8 @@ python -m pytest tests/ -q               # full suite (smoke + regression pins +
 
 Outputs: `figures/*.{pdf,png}`, `results/entangletron_metrics.json`,
 `results/coherence_ensemble.json`, `results/ensemble_convergence.json`,
-`results/scale_sensitivity.json`, `results/noise_correlation.json`,
+`results/scale_sensitivity.json`, `results/noise_correlation.json`
+(plus `results/selectivity.json`), `figures/fig_correlation_overlay.pdf`,
 `results/*.npy`, `assets/iframe_flight.gif`.
 
 To use `entangletronica` as an importable library (outside the repo scripts),
@@ -345,12 +368,14 @@ the archived version of record:
 │   ├── ensemble_convergence.py     # Nested C(N) convergence check (JSON)
 │   ├── scale_sensitivity.py        # T_max vs noise scale s = 17/22/27 (JSON)
 │   ├── noise_correlation.py        # ξ = 0/5/10 nm correlated-noise check (JSON)
+│   ├── compute_selectivity.py      # cross-arm coupling ratio (results/selectivity.json)
 │   ├── make_robustness_figure.py   # 4-panel referee due-diligence figure
 │   ├── _calibrate_scale.py         # Empirical scale_noise calibration (dev artifact)
 │   ├── make_missing_figures.py     # Poisson-mapping / coherence / XOR figures
 │   ├── convergence_study.py        # Grid-refinement study
 │   ├── readout_sensitivity.py      # Readout-functional analysis
 │   └── make_animation.py           # In-flight interference animation
+│   ├── archive/legacy_landscapes.py  # Archived dead code (double-slit/focus toy models)
 ├── entangletronica/             # Simulation package (potential, electron, gates)
 ├── results/                     # Simulation outputs (tracked JSON metrics, gitignored *.npy)
 ├── tests/                       # Smoke + metrics-regression tests
