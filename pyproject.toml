@@ -43,7 +43,7 @@ test = ["pytest>=7"]
 [project.urls]
 Repository = "https://github.com/FTG-003/entangletronica"
 Paper = "https://github.com/FTG-003/entangletronica/blob/main/paper/EQLI_PhaseGate_Benchmark_2026.pdf"
-DOI = "https://zenodo.org/records/21802416"
+DOI = "https://zenodo.org/records/21819297"
 
 [tool.setuptools.packages.find]
 include = ["entangletronica*"]
